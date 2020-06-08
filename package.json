@@ -1,0 +1,24 @@
+{
+  "name": "perritu",
+  "version": "1.0.0",
+  "description": "Perritu bot de Discord.",
+  "main": "Perritu.js",
+  "scripts": {
+    "test": "node Perritu.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ckemill/Prueba.git"
+  },
+  "author": "Ckemill",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ckemill/Prueba/issues"
+  },
+  "homepage": "https://github.com/Ckemill/Prueba#readme",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
+  }
+}
