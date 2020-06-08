@@ -41,6 +41,9 @@ module.exports = {
                             //elegir frase de agregar al azar
                             var agregada = frase_agregada[Math.floor(Math.random() * frase_agregada.length)];
                             
+                            //borrar chache para actualizar lista de frases
+                            delete require.cache['../frases.json'];
+
                             message.reply(agregada);
 
                         });
@@ -67,6 +70,9 @@ module.exports = {
                             //elegir frase de agregar al azar
                             var agregada = frase_agregada[Math.floor(Math.random() * frase_agregada.length)];
                             
+                            //borrar chache para actualizar lista de frases
+                            delete require.cache['../frases.json'];
+
                             message.reply(agregada);
 
                         });
@@ -76,20 +82,20 @@ module.exports = {
 
                 });
             }
-            else{
+            
+            fs.readFile("./frases.json", "utf-8", function(err, data) {
 
-                fs.readFile("./frases.json", "utf-8", function(err, data) {
+                if (err) throw err;
+            
+                const frases = JSON.parse(data);
+                const lista = Object.keys(frases).join("\n");
 
-                    if (err) throw err;
-                
-                    const frases = JSON.parse(data);
-                    const lista = Object.keys(frases).join("\n");
-    
+                if(lista.indexOf(args[0]) == -1){
+        
                     return message.reply("Asegurate de escribir una de las listas: \n\r**"+lista+"**");
-                    
-                });
-                
-            }
+        
+                }
+            });
         }
 	}
 };

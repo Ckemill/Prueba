@@ -50,6 +50,9 @@ client.on('message', message => {
 
             //responder error en comando
             message.reply(error);
+
+            //borrar chache para actualizar lista de frases
+            delete require.cache['./frases.json'];
             return;
         }
         
