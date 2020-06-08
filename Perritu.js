@@ -68,4 +68,4 @@ client.on('message', message => {
 });
 
 //Activar a Perritu:
-client.login(process.env.BOT_TOKEN);
+client.login("NzAzNTIyOTE1Mzc4OTIxNTk0.Xt4zgA.bYXqgfl-lyGkADXpDGY_IDuH6Vc");
