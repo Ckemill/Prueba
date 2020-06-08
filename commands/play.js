@@ -18,5 +18,5 @@ module.exports = {
             message.channel.send('Por favor usa el canal de **musica**.');
         }
 		
-	},
+	}
 };

@@ -3,6 +3,7 @@ const client = new discord.Client();
 const { readdirSync } = require("fs");
 const { join } = require ("path");
 const { prefix } = require("./config.json");
+const { comando_inexistente } = require("./frases.json");
 
 //Eventos de Perritu:
 client.on("ready", () => {
@@ -16,10 +17,10 @@ client.on("warn", info => console.log(info));
 
 client.on("error", console.error);
 
+
 //Declaraciones:
 client.commands = new discord.Collection();
 client.prefix = prefix;
-client.queue = new Map();
 
 
 //Cargar archivos:
@@ -43,7 +44,12 @@ client.on('message', message => {
         const command = args.shift().toLowerCase();
 
         if(!client.commands.has(command)){
-            message.reply("Mi loco eso no es un comando xd")
+
+            //elegir frase de error al azar
+            var error = comando_inexistente[Math.floor(Math.random() * comando_inexistente.length)];
+
+            //responder error en comando
+            message.reply(error);
             return;
         }
         
@@ -55,9 +61,11 @@ client.on('message', message => {
         }
 
     }
+    if(message.content === 'help') {
+        message.reply(`Recuerda usar **${prefix}** antes de un comando :3`);
+    }
 
 });
 
-
 //Activar a Perritu:
-client.login("NzAzNTIyOTE1Mzc4OTIxNTk0.Xt1KTg.Q6oy7eAgPsXvN_FR1mo_t2_Nq-U");
+client.login(process.env.BOT_TOKEN);
