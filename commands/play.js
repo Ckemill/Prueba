@@ -90,8 +90,6 @@ module.exports = {
 
                     //Buscar cancion
 
-                    console.log(targetsong);
-
                     yts( targetsong, function ( err, r ) {
                         if ( err ) return message.reply("No encontre ninguna cancion, intentalo otra vez");
             
