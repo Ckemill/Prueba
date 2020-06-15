@@ -1,3 +1,5 @@
+const { parar_musica } = require("../frases.json");
+
 module.exports = {
 	name: 'stop',
     description: 'Parar la musica',
@@ -10,7 +12,10 @@ module.exports = {
         }
 
         try{
+            var para = parar_musica[Math.floor(Math.random() * parar_musica.length)];
+
             voiceChannel.leave();
+            message.channel.send(para);
         }
         catch (err){
             console.log("error" +err);
