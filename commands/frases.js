@@ -82,6 +82,151 @@ module.exports = {
 
                 });
             }
+            if (args[0] === "reproducir"){
+
+                fs.readFile("./frases.json", "utf-8", function(err, data) {
+
+                    if (err) throw err;
+
+                    var frases = JSON.parse(data);
+                    frases.reproducir.push(args.slice(1).join(" "));
+
+                    try{
+                        fs.writeFile("./frases.json", JSON.stringify(frases), "utf-8", function(err){
+                            
+                            if (err) throw err;
+
+                            //elegir frase de agregar al azar
+                            var agregada = frase_agregada[Math.floor(Math.random() * frase_agregada.length)];
+                            
+                            //borrar chache para actualizar lista de frases
+                            delete require.cache['../frases.json'];
+
+                            message.reply(agregada);
+
+                        });
+                    }catch(err){
+                        console.log(err);
+                    }
+
+                });
+            }
+            if (args[0] === "no_voice"){
+
+                fs.readFile("./frases.json", "utf-8", function(err, data) {
+
+                    if (err) throw err;
+
+                    var frases = JSON.parse(data);
+                    frases.no_voice.push(args.slice(1).join(" "));
+
+                    try{
+                        fs.writeFile("./frases.json", JSON.stringify(frases), "utf-8", function(err){
+                            
+                            if (err) throw err;
+
+                            //elegir frase de agregar al azar
+                            var agregada = frase_agregada[Math.floor(Math.random() * frase_agregada.length)];
+                            
+                            //borrar chache para actualizar lista de frases
+                            delete require.cache['../frases.json'];
+
+                            message.reply(agregada);
+
+                        });
+                    }catch(err){
+                        console.log(err);
+                    }
+
+                });
+            }
+            if (args[0] === "no_permisos"){
+
+                fs.readFile("./frases.json", "utf-8", function(err, data) {
+
+                    if (err) throw err;
+
+                    var frases = JSON.parse(data);
+                    frases.no_permisos.push(args.slice(1).join(" "));
+
+                    try{
+                        fs.writeFile("./frases.json", JSON.stringify(frases), "utf-8", function(err){
+                            
+                            if (err) throw err;
+
+                            //elegir frase de agregar al azar
+                            var agregada = frase_agregada[Math.floor(Math.random() * frase_agregada.length)];
+                            
+                            //borrar chache para actualizar lista de frases
+                            delete require.cache['../frases.json'];
+
+                            message.reply(agregada);
+
+                        });
+                    }catch(err){
+                        console.log(err);
+                    }
+
+                });
+            }
+            if (args[0] === "canal_musica"){
+
+                fs.readFile("./frases.json", "utf-8", function(err, data) {
+
+                    if (err) throw err;
+
+                    var frases = JSON.parse(data);
+                    frases.canal_musica.push(args.slice(1).join(" "));
+
+                    try{
+                        fs.writeFile("./frases.json", JSON.stringify(frases), "utf-8", function(err){
+                            
+                            if (err) throw err;
+
+                            //elegir frase de agregar al azar
+                            var agregada = frase_agregada[Math.floor(Math.random() * frase_agregada.length)];
+                            
+                            //borrar chache para actualizar lista de frases
+                            delete require.cache['../frases.json'];
+
+                            message.reply(agregada);
+
+                        });
+                    }catch(err){
+                        console.log(err);
+                    }
+
+                });
+            }
+            if (args[0] === "cancion_agregada"){
+
+                fs.readFile("./frases.json", "utf-8", function(err, data) {
+
+                    if (err) throw err;
+
+                    var frases = JSON.parse(data);
+                    frases.cancion_agregada.push(args.slice(1).join(" "));
+
+                    try{
+                        fs.writeFile("./frases.json", JSON.stringify(frases), "utf-8", function(err){
+                            
+                            if (err) throw err;
+
+                            //elegir frase de agregar al azar
+                            var agregada = frase_agregada[Math.floor(Math.random() * frase_agregada.length)];
+                            
+                            //borrar chache para actualizar lista de frases
+                            delete require.cache['../frases.json'];
+
+                            message.reply(agregada);
+
+                        });
+                    }catch(err){
+                        console.log(err);
+                    }
+
+                });
+            }
             
             fs.readFile("./frases.json", "utf-8", function(err, data) {
 
