@@ -95,17 +95,17 @@ module.exports = {
             
                         const videos = r.videos;
 
-                        if(!videos){
+                        url = videos[0].url;
+                        title = videos[0].title;
+                        autor = videos[0].author.name;
+
+                        if(!url){
                             message.reply("No encontre ninguna cancion, intentalo otra vez");
                         }
 
                         else{
 
                             const voiceChannel = message.member.voice.channel;
-            
-                            url = videos[0].url;
-                            title = videos[0].title;
-                            autor = videos[0].author.name;
     
                             var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
     
