@@ -93,7 +93,7 @@ module.exports = {
                     console.log(targetsong);
 
                     yts( targetsong, function ( err, r ) {
-                        if ( err ) throw err;
+                        if ( err ) return message.reply("No encontre ninguna cancion, intentalo otra vez");
             
                         const videos = r.videos;
 
@@ -101,36 +101,28 @@ module.exports = {
                         title = videos[0].title;
                         autor = videos[0].author.name;
 
-                        if(!url){
-                            message.reply("No encontre ninguna cancion, intentalo otra vez");
-                        }
-
-                        else{
-
-                            const voiceChannel = message.member.voice.channel;
+                        const voiceChannel = message.member.voice.channel;
     
-                            var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
+                        var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
     
-                            const playEmbed = new Discord.MessageEmbed()
-                            .setColor("#8b3dbd")
-                            .setTitle(repro)
-                            .setDescription(`[${title}](${url}) \nAutor: ${autor}`);
+                        const playEmbed = new Discord.MessageEmbed()
+                        .setColor("#8b3dbd")
+                        .setTitle(repro)
+                        .setDescription(`[${title}](${url}) \nAutor: ${autor}`);
                 
-                            voiceChannel.join().then(connection => {
-                                const stream = ytdl(url, { filter: 'audioonly' });
-                                const dispatcher = connection.play(stream);
+                        voiceChannel.join().then(connection => {
+                            const stream = ytdl(url, { filter: 'audioonly' });
+                            const dispatcher = connection.play(stream);
                     
-                                dispatcher.on('end', () => voiceChannel.leave());
-                            });
+                            dispatcher.on('end', () => voiceChannel.leave());
+                        });
     
-                            message.channel.send(playEmbed).then(sentMessage => {
-                                sentMessage.react('⏪')
-                                .then(() => sentMessage.react('⏯'))
-                                .then(() => sentMessage.react('⏩'))
-                                .catch(() => console.error('One of the emojis failed to react.'));
-                            });
-
-                        }
+                        message.channel.send(playEmbed).then(sentMessage => {
+                            sentMessage.react('⏪')
+                            .then(() => sentMessage.react('⏯'))
+                            .then(() => sentMessage.react('⏩'))
+                            .catch(() => console.error('One of the emojis failed to react.'));
+                        });
             
                     });
 
