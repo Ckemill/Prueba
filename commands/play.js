@@ -90,6 +90,8 @@ module.exports = {
 
                     //Buscar cancion
 
+                    console.log(targetsong);
+
                     yts( targetsong, function ( err, r ) {
                         if ( err ) throw err;
             
@@ -134,37 +136,6 @@ module.exports = {
 
                 }
 
-                /*const songInfo = await ytdl.getInfo(url);
-                const song = {
-                    title: songInfo.title,
-                    url: songInfo.video_url,
-                };
-                    
-                    //elegir frase de no permisos al azar
-                    var agregada = cancion_agregada[Math.floor(Math.random() * cancion_agregada.length)];
-
-                    const addEmbed = new Discord.MessageEmbed()
-                    .setColor("#8b3dbd")
-                    .setTitle(agregada)
-                    .setDescription(`[${song.title}](${song.url})`);
-
-                    return message.channel.send(addEmbed);
-                
-
-                var reproducir = repro[Math.floor(Math.random() * repro.length)];
-
-                const playEmbed = new Discord.MessageEmbed()
-                .setColor("#8b3dbd")
-                .setTitle(reproducir)
-                .setDescription(`[${song.title}](${song.url})`);
-
-                message.channel.send(playEmbed).then(sentMessage => {
-                    sentMessage.react('⏪')
-                    .then(() => sentMessage.react('⏯'))
-                    .then(() => sentMessage.react('⏩'))
-                    .catch(() => console.error('One of the emojis failed to react.'));
-                });
-                */
             }
         }
         else{
