@@ -7,7 +7,7 @@ const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada } = re
 module.exports = {
 	name: 'play',
     description: 'Poner musica',
-    execute(client, message, args) {
+    async execute(client, message, args) {
 
         if (message.author.bot){
             return;
@@ -51,10 +51,11 @@ module.exports = {
 
                     //Video link
 
-                    const songInfo = ytdl.getInfo(args[0]);
+                    const songInfo = await ytdl.getInfo(args[0], 1);
                     const song = {
                     title: songInfo.title,
                     url: songInfo.video_url,
+                    autor: songInfo.author.name
                     };
 
                     var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
@@ -62,7 +63,7 @@ module.exports = {
                     const playEmbed = new Discord.MessageEmbed()
                     .setColor("#8b3dbd")
                     .setTitle(repro)
-                    .setDescription(`[${song.title}](${song.url})`);
+                    .setDescription(`[${song.title}](${song.url}) \n**Autor:** ${song.autor}`);
 
                     message.channel.send(playEmbed).then(sentMessage => {
                         sentMessage.react('⏪')
@@ -71,11 +72,13 @@ module.exports = {
                         .catch(() => console.error('One of the emojis failed to react.'));
                     });
 
+                    delete require.cache['../frases.json'];
+
                     voiceChannel.join().then(connection => {
                         const stream = ytdl(args[0], { filter: 'audioonly' });
                         const dispatcher = connection.play(stream);
             
-                        dispatcher.on('end', () => voiceChannel.leave());
+                        dispatcher.on('finish', () => voiceChannel.leave());
                     });
 
                 }
@@ -91,7 +94,7 @@ module.exports = {
                     //Buscar cancion
 
                     yts( targetsong, function ( err, r ) {
-                        if ( err ) return message.reply("No encontre ninguna cancion, intentalo otra vez");
+                        if ( err ) return message.reply("No encontre ninguna cancion, intentalo otra vez.");
             
                         const videos = r.videos;
 
@@ -106,13 +109,13 @@ module.exports = {
                         const playEmbed = new Discord.MessageEmbed()
                         .setColor("#8b3dbd")
                         .setTitle(repro)
-                        .setDescription(`[${title}](${url}) \nAutor: ${autor}`);
+                        .setDescription(`[${title}](${url}) \n**Autor:** ${autor}`);
                 
                         voiceChannel.join().then(connection => {
                             const stream = ytdl(url, { filter: 'audioonly' });
                             const dispatcher = connection.play(stream);
                     
-                            dispatcher.on('end', () => voiceChannel.leave());
+                            dispatcher.on('finish', () => voiceChannel.leave());
                         });
     
                         message.channel.send(playEmbed).then(sentMessage => {
@@ -121,6 +124,9 @@ module.exports = {
                             .then(() => sentMessage.react('⏩'))
                             .catch(() => console.error('One of the emojis failed to react.'));
                         });
+
+                        //borrar chache para actualizar lista de frases
+                        delete require.cache['../frases.json'];
             
                     });
 

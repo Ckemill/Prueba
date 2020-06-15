@@ -1,10 +1,10 @@
 {
     "comando_inexistente":["Mi loco eso no e' un comando xd","Usa **help** si estas perdido."],
     "frase_agregada":["Frase agregada!","Vocabulario actualizado!"],
-    "reproducir": ["Reproduciendo"],
-    "no_voice": ["Ajá, y donde te pongo la musica si no estas en un voice? :expressionless:"],
-    "no_permisos": ["¿Que hay que hacer pa' sacar rango aqui?"],
-    "canal_musica": ["Por favor usa el canal de **musica**."],
-    "cancion_agregada": ["Se ha agregado a la lista de canciones:"],
-    "parar_musica": ["See, creo que estuvo bueno por un rato."]
+    "reproducir":["Reproduciendo","Oye esta grasita:"],
+    "no_voice":["Ajá, y donde te pongo la musica si no estas en un voice? :expressionless:"],
+    "no_permisos":["¿Que hay que hacer pa' sacar rango aqui?"],
+    "canal_musica":["Por favor usa el canal de **musica**."],
+    "cancion_agregada":["Se ha agregado a la lista de canciones:"],
+    "parar_musica":["See, creo que estuvo bueno por un rato."]
 }

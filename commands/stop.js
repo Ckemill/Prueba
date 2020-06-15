@@ -15,7 +15,11 @@ module.exports = {
             var para = parar_musica[Math.floor(Math.random() * parar_musica.length)];
 
             voiceChannel.leave();
+
             message.channel.send(para);
+
+            delete require.cache['../frases.json'];
+            return;
         }
         catch (err){
             console.log("error" +err);
