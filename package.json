@@ -21,7 +21,7 @@
     "discord.js": "12.2.0",
     "fs": "0.0.1-security",
     "path": "0.12.7",
-    "yt-search": "^1.1.2",
-    "ytdl-core": "^2.1.7"
+    "yt-search": "1.1.2",
+    "ytdl-core": "2.1.7"
   }
 }
