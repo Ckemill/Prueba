@@ -1,8 +1,9 @@
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
+const fb = require("fb-video-downloader");
 const { prefix } = require("../config.json");
-const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada } = require("../frases.json");
+const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada, parar_musica } = require("../frases.json");
 
 module.exports = {
 	name: 'play',
@@ -46,16 +47,70 @@ module.exports = {
                 const targetsong = args.join(' ');
                 const videoPattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
                 const playlistPattern = /^.*(youtu.be\/|list=)([^#\&\?]*).*/gi;
+                const facebookPattern = /(?:https?:\/\/)?(?:www\.)?(mbasic.facebook|m\.facebook|facebook|fb)\.(com|me)\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)/ig;
 
-                if(videoPattern.test(args[0])){
+                if(facebookPattern.test(args[0])){
+
+                    //Facebook
+
+                    const video = await fb.getInfo(targetsong);
+
+                    const vid = {
+                        title: video.title,
+                        url: video.download.sd
+                    };
+
+                    var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
+
+                    const playEmbed = new Discord.MessageEmbed()
+                    .setColor("#8b3dbd")
+                    .setTitle(repro)
+                    .setDescription(`**Video de: [${vid.title}](${vid.url})**`);
+
+                    message.channel.send(playEmbed).then(sentMessage => {
+                        sentMessage.react('⏪')
+                        .then(() => sentMessage.react('⏯'))
+                        .then(() => sentMessage.react('⏩'))
+                        .catch(() => console.error('One of the emojis failed to react.'));
+                    });
+
+                    delete require.cache['../frases.json'];
+
+                    voiceChannel.join().then(connection => {
+                        const dispatcher = connection.play(vid.url);
+            
+                        dispatcher.on('finish', () => {
+                            voiceChannel.leave();
+                            
+                            var para = parar_musica[Math.floor(Math.random() * parar_musica.length)];
+
+                            message.channel.send(para);
+
+                            delete require.cache['../frases.json'];
+                        }),
+                        dispatcher.on('error', console.error);
+                    });
+
+                }
+
+                else if(playlistPattern.test(args[0])){
+
+                    //Playlist link
+
+                    message.reply("aún estoy trabajando con las listas de reproducción.");
+
+                }
+
+                else if(videoPattern.test(args[0])){
 
                     //Video link
 
                     const songInfo = await ytdl.getInfo(args[0], 1);
+
                     const song = {
-                    title: songInfo.title,
-                    url: songInfo.video_url,
-                    autor: songInfo.author.name
+                        title: songInfo.title,
+                        url: songInfo.video_url,
+                        autor: songInfo.author.name
                     };
 
                     var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
@@ -78,14 +133,16 @@ module.exports = {
                         const stream = ytdl(args[0], { filter: 'audioonly' });
                         const dispatcher = connection.play(stream);
             
-                        dispatcher.on('finish', () => voiceChannel.leave());
+                        dispatcher.on('finish', () => {
+                            voiceChannel.leave();
+
+                            var para = parar_musica[Math.floor(Math.random() * parar_musica.length)];
+
+                            message.channel.send(para);
+
+                            delete require.cache['../frases.json'];
+                        });
                     });
-
-                }
-
-                else if (playlistPattern.test(args[0])){
-
-                    message.reply("Aun trabajando con playlists");
 
                 }
 
@@ -94,13 +151,16 @@ module.exports = {
                     //Buscar cancion
 
                     yts( targetsong, function ( err, r ) {
-                        if ( err ) return message.reply("No encontre ninguna cancion, intentalo otra vez.");
+                        if ( err ) return message.reply("no encontre ninguna canción, intentalo otra vez.");
             
                         const videos = r.videos;
 
-                        url = videos[0].url;
-                        title = videos[0].title;
-                        autor = videos[0].author.name;
+                        const video = {
+                            title: videos[0].title,
+                            url: videos[0].url,
+                            autor: videos[0].author.name,
+                            img: videos[0].thumbnail
+                        };
 
                         const voiceChannel = message.member.voice.channel;
     
@@ -109,13 +169,22 @@ module.exports = {
                         const playEmbed = new Discord.MessageEmbed()
                         .setColor("#8b3dbd")
                         .setTitle(repro)
-                        .setDescription(`[${title}](${url}) \n**Autor:** ${autor}`);
+                        .setThumbnail(video.img)
+                        .setDescription(`**[${video.title}](${video.url})** \n**Autor:** ${video.autor}`);
                 
                         voiceChannel.join().then(connection => {
-                            const stream = ytdl(url, { filter: 'audioonly' });
+                            const stream = ytdl(video.url, { filter: 'audioonly' });
                             const dispatcher = connection.play(stream);
                     
-                            dispatcher.on('finish', () => voiceChannel.leave());
+                            dispatcher.on('finish', () => {
+                                voiceChannel.leave();
+
+                                var para = parar_musica[Math.floor(Math.random() * parar_musica.length)];
+
+                                message.channel.send(para);
+
+                                delete require.cache['../frases.json'];
+                            });
                         });
     
                         message.channel.send(playEmbed).then(sentMessage => {
