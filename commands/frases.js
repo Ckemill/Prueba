@@ -1,11 +1,12 @@
 const fs = require("fs");
 const { prefix } = require("../config.json");
-const { frase_agregada } = require("../frases.json")
 
 module.exports = {
 	name: 'frase',
     description: 'Agregar frases a Perritu',
 	execute(client, message, args) {
+		
+	const { frase_agregada } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
         if(!args.length) {
 
