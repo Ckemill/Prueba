@@ -1,9 +1,11 @@
-const { parar_musica } = require("../frases.json");
+const fs = require('fs');
 
 module.exports = {
 	name: 'stop',
     description: 'Parar la musica',
 	async execute(client, message) {
+		
+	const { parar_musica } = JSON.parse(fs.readFileSync('../frases.json', 'utf8'));
 
         const voiceChannel = message.member.voice.channel;
 
@@ -18,7 +20,6 @@ module.exports = {
 
             message.channel.send(para);
 
-            delete require.cache['../frases.json'];
             return;
         }
         catch (err){
