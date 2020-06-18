@@ -9,8 +9,10 @@ module.exports = {
 	name: 'play',
     description: 'Poner musica',
     async execute(client, message, args) {
+
+        const user = message.author;
 	    
-	const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada, parar_musica } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
+	    const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada, parar_musica } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
         if (message.author.bot){
             return;
@@ -67,7 +69,7 @@ module.exports = {
                     const playEmbed = new Discord.MessageEmbed()
                     .setColor("#8b3dbd")
                     .setTitle(repro)
-                    .setDescription(`**Video de: [${vid.title}](${vid.url})**`);
+                    .setDescription(`**Video de: [${vid.title}](${vid.url})** \n**Puesta por:** ${user}`);
 
                     message.channel.send(playEmbed).then(sentMessage => {
                         sentMessage.react('⏪')
@@ -117,7 +119,7 @@ module.exports = {
                     const playEmbed = new Discord.MessageEmbed()
                     .setColor("#8b3dbd")
                     .setTitle(repro)
-                    .setDescription(`[${song.title}](${song.url}) \n**Autor:** ${song.autor}`);
+                    .setDescription(`[${song.title}](${song.url}) \n**Autor:** ${song.autor} \n**Puesta por:** ${user}`);
 
                     message.channel.send(playEmbed).then(sentMessage => {
                         sentMessage.react('⏪')
@@ -167,7 +169,7 @@ module.exports = {
                         .setColor("#8b3dbd")
                         .setTitle(repro)
                         .setThumbnail(video.img)
-                        .setDescription(`**[${video.title}](${video.url})** \n**Autor:** ${video.autor}`);
+                        .setDescription(`**[${video.title}](${video.url})** \n**Autor:** ${video.autor} \n**Puesta por:** ${user}`);
                 
                         voiceChannel.join().then(connection => {
                             const stream = ytdl(video.url, { filter: 'audioonly' });

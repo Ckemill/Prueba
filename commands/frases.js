@@ -17,7 +17,7 @@ module.exports = {
                 const frases = JSON.parse(data);
                 const lista = Object.keys(frases).join("\n");
    
-                message.reply("Puedes poner una frase para estas listas: \n\r**"+lista+" ** \n\rSolo tienes que poner `"+prefix+"frase lista oración`.");
+                message.reply("Puedes poner una frase para estas listas: \n\r**"+lista+" ** \n\rEjemplo: `"+prefix+"frase no_voice Tienes que estar en un voice.`");
 
             });
         }
@@ -267,7 +267,7 @@ module.exports = {
 
                 if(lista.indexOf(args[0]) == -1){
         
-                    return message.reply("Asegurate de escribir una de las listas: \n\r**"+lista+"** \n\rSolo tienes que poner `"+prefix+"frase lista oración`.");
+                    return message.reply("Asegurate de escribir una de las listas: \n\r**"+lista+"** \n\rEjemplo: `"+prefix+"frase no_voice Tienes que estar en un voice.`");
         
                 }
             });
