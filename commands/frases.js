@@ -5,6 +5,8 @@ module.exports = {
 	name: 'frase',
     description: 'Agregar frases a Perritu',
 	execute(client, message, args) {
+		
+	const { frase_agregada } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
         const { frase_agregada } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 

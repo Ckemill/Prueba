@@ -9,8 +9,8 @@ module.exports = {
 	name: 'play',
     description: 'Poner musica',
     async execute(client, message, args) {
-
-        const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada, parar_musica } = JSON.parse(fs.readFileSync('../frases.json', 'utf8'));
+	    
+	const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada, parar_musica } = JSON.parse(fs.readFileSync('../frases.json', 'utf8'));
 
         if (message.author.bot){
             return;
@@ -126,6 +126,7 @@ module.exports = {
                         .catch(() => console.error('One of the emojis failed to react.'));
                     });
 
+
                     voiceChannel.join().then(connection => {
                         const stream = ytdl(args[0], { filter: 'audioonly' });
                         const dispatcher = connection.play(stream);
@@ -146,14 +147,8 @@ module.exports = {
 
                     //Buscar cancion
 
-                    const opts = {
-                        query: targetsong,
-                        pageStart: 1,
-                        pageEnd: 1
-                    }
-                        
-                    yts( opts, function ( err, r ) { 
-                        if ( err )return console.log(err), message.reply("no encontré ninguna canción, intentalo otra vez.");
+                    yts( targetsong, function ( err, r ) {
+                        if ( err ) return message.reply("no encontre ninguna canción, intentalo otra vez.");
             
                         const videos = r.videos;
 
@@ -185,7 +180,6 @@ module.exports = {
 
                                 message.channel.send(para);
 
-                                jest.resetModules();
                             });
                         });
     

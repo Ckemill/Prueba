@@ -44,6 +44,8 @@ client.on('message', message => {
         const command = args.shift().toLowerCase();
 
         if(!client.commands.has(command)){
+            
+            const { comando_inexistente } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
             const { comando_inexistente } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
