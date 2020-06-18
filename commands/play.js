@@ -10,7 +10,7 @@ module.exports = {
     description: 'Poner musica',
     async execute(client, message, args) {
 	    
-	const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada, parar_musica } = JSON.parse(fs.readFileSync('../frases.json', 'utf8'));
+	const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada, parar_musica } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
         if (message.author.bot){
             return;

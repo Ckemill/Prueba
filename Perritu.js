@@ -47,8 +47,6 @@ client.on('message', message => {
             
             const { comando_inexistente } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
-            const { comando_inexistente } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
-
             //elegir frase de error al azar
             var error = comando_inexistente[Math.floor(Math.random() * comando_inexistente.length)];
 

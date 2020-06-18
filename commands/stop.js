@@ -4,10 +4,8 @@ module.exports = {
 	name: 'stop',
     description: 'Parar la musica',
 	async execute(client, message) {
-		
-	const { parar_musica } = JSON.parse(fs.readFileSync('../frases.json', 'utf8'));
 
-        const { parar_musica } = JSON.parse(fs.readFileSync('../frases.json', 'utf8'));
+        const { parar_musica } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
         const voiceChannel = message.member.voice.channel;
 
