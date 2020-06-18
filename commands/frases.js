@@ -267,7 +267,7 @@ module.exports = {
 
                 if(lista.indexOf(args[0]) == -1){
         
-                    return message.reply("Asegurate de escribir una de las listas: \n\r**"+lista+"**");
+                    return message.reply("Asegurate de escribir una de las listas: \n\r**"+lista+"** \n\rSolo tienes que poner `"+prefix+"frase lista oración`.");
         
                 }
             });
