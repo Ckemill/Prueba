@@ -1,14 +1,16 @@
+const fs = require('fs');
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
 const fb = require("fb-video-downloader");
 const { prefix } = require("../config.json");
-const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada, parar_musica } = require("../frases.json");
 
 module.exports = {
 	name: 'play',
     description: 'Poner musica',
     async execute(client, message, args) {
+
+        const { reproducir, no_voice, no_permisos, canal_musica, cancion_agregada, parar_musica } = JSON.parse(fs.readFileSync('../frases.json', 'utf8'));
 
         if (message.author.bot){
             return;
@@ -74,8 +76,6 @@ module.exports = {
                         .catch(() => console.error('One of the emojis failed to react.'));
                     });
 
-                    delete require.cache['../frases.json'];
-
                     voiceChannel.join().then(connection => {
                         const dispatcher = connection.play(vid.url);
             
@@ -86,7 +86,6 @@ module.exports = {
 
                             message.channel.send(para);
 
-                            delete require.cache['../frases.json'];
                         }),
                         dispatcher.on('error', console.error);
                     });
@@ -127,8 +126,6 @@ module.exports = {
                         .catch(() => console.error('One of the emojis failed to react.'));
                     });
 
-                    delete require.cache['../frases.json'];
-
                     voiceChannel.join().then(connection => {
                         const stream = ytdl(args[0], { filter: 'audioonly' });
                         const dispatcher = connection.play(stream);
@@ -140,7 +137,6 @@ module.exports = {
 
                             message.channel.send(para);
 
-                            delete require.cache['../frases.json'];
                         });
                     });
 
@@ -150,8 +146,14 @@ module.exports = {
 
                     //Buscar cancion
 
-                    yts( targetsong, function ( err, r ) {
-                        if ( err ) return message.reply("no encontre ninguna canción, intentalo otra vez.");
+                    const opts = {
+                        query: targetsong,
+                        pageStart: 1,
+                        pageEnd: 1
+                    }
+                        
+                    yts( opts, function ( err, r ) { 
+                        if ( err )return console.log(err), message.reply("no encontré ninguna canción, intentalo otra vez.");
             
                         const videos = r.videos;
 
@@ -183,7 +185,7 @@ module.exports = {
 
                                 message.channel.send(para);
 
-                                delete require.cache['../frases.json'];
+                                jest.resetModules();
                             });
                         });
     
@@ -193,9 +195,6 @@ module.exports = {
                             .then(() => sentMessage.react('⏩'))
                             .catch(() => console.error('One of the emojis failed to react.'));
                         });
-
-                        //borrar chache para actualizar lista de frases
-                        delete require.cache['../frases.json'];
             
                     });
 

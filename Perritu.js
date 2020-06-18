@@ -1,9 +1,9 @@
 const discord = require("discord.js");
 const client = new discord.Client();
+const fs = require('fs');
 const { readdirSync } = require("fs");
 const { join } = require ("path");
 const { prefix } = require("./config.json");
-const { comando_inexistente } = require("./frases.json");
 
 //Eventos de Perritu:
 client.on("ready", () => {
@@ -45,14 +45,14 @@ client.on('message', message => {
 
         if(!client.commands.has(command)){
 
+            const { comando_inexistente } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
+
             //elegir frase de error al azar
             var error = comando_inexistente[Math.floor(Math.random() * comando_inexistente.length)];
 
             //responder error en comando
             message.reply(error);
 
-            //borrar chache para actualizar lista de frases
-            delete require.cache['./frases.json'];
             return;
         }
         
