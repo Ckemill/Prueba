@@ -4,7 +4,6 @@ const fs = require('fs');
 const { readdirSync } = require("fs");
 const { join } = require ("path");
 const { prefix } = require("./config.json");
-const { comando_inexistente } = require("./frases.json");
 
 //Eventos de Perritu:
 client.on("ready", () => {
