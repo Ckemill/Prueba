@@ -42,7 +42,7 @@ module.exports = {
             }
             if(!args.length){
 
-                message.reply("Puedes usar un link de youtube o decirme que canción buscar. \n\r`"+prefix+"play link|canción`.");
+                message.reply("Puedes usar un link de youtube/facebook o decirme que canción buscar. \n\r`"+prefix+"play link|canción`.");
             
             }
 
