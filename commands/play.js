@@ -158,7 +158,8 @@ module.exports = {
                             title: videos[0].title,
                             url: videos[0].url,
                             autor: videos[0].author.name,
-                            img: videos[0].thumbnail
+                            duration: videos[0].timestamp,
+                            img: videos[0].image
                         };
 
                         const voiceChannel = message.member.voice.channel;
@@ -169,7 +170,7 @@ module.exports = {
                         .setColor("#8b3dbd")
                         .setTitle(repro)
                         .setThumbnail(video.img)
-                        .setDescription(`**[${video.title}](${video.url})** \n**Autor:** ${video.autor} \n**Puesta por:** ${user}`);
+                        .setDescription(`**[${video.title}](${video.url})** \n**Autor:** ${video.autor} \n**Duración:** ${video.duration} \n**Puesta por:** ${user}`);
                 
                         voiceChannel.join().then(connection => {
                             const stream = ytdl(video.url, { filter: 'audioonly' });
