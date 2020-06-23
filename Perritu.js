@@ -5,6 +5,8 @@ const { readdirSync } = require("fs");
 const { join } = require ("path");
 const { prefix } = require("./config.json");
 
+const queue = new Map();
+
 //Eventos de Perritu:
 client.on("ready", () => {
     console.log("Coleando!");
@@ -43,6 +45,8 @@ client.on('message', message => {
         const args = message.content.slice(prefix.length).trim().split(/ +/);
         const command = args.shift().toLowerCase();
 
+        const serverQueue = queue.get(message.guild.id);
+
         if(!client.commands.has(command)){
             
             const { comando_inexistente } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
@@ -57,7 +61,7 @@ client.on('message', message => {
         }
         
         try{
-            client.commands.get(command).execute(client, message, args);
+            client.commands.get(command).execute(client, message, args, queue, serverQueue);
         }
         catch(err) {
             console.log(err);

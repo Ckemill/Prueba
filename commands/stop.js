@@ -3,7 +3,7 @@ const fs = require('fs');
 module.exports = {
 	name: 'stop',
     description: 'Parar la musica',
-	async execute(client, message) {
+	async execute(client, message, args, queue) {
 
         const { parar_musica } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
@@ -19,6 +19,8 @@ module.exports = {
             voiceChannel.leave();
 
             message.channel.send(para);
+
+            queue.delete(message.guild.id);
 
             return;
         }

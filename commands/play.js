@@ -8,7 +8,7 @@ const { prefix } = require("../config.json");
 module.exports = {
 	name: 'play',
     description: 'Poner musica',
-    async execute(client, message, args) {
+    async execute(client, message, args, queue, serverQueue) {
 
         const user = message.author;
 	    
@@ -59,38 +59,54 @@ module.exports = {
 
                     const video = await fb.getInfo(targetsong);
 
-                    const vid = {
+                    const song = {
                         title: video.title,
-                        url: video.download.sd
+                        url: video.download.sd,
+                        usuario: user
                     };
 
                     var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
 
-                    const playEmbed = new Discord.MessageEmbed()
-                    .setColor("#8b3dbd")
-                    .setTitle(repro)
-                    .setDescription(`**Video de: [${vid.title}](${vid.url})** \n**Puesta por:** ${user}`);
+                    if(!serverQueue){
 
-                    message.channel.send(playEmbed).then(sentMessage => {
-                        sentMessage.react('⏪')
-                        .then(() => sentMessage.react('⏯'))
-                        .then(() => sentMessage.react('⏩'))
-                        .catch(() => console.error('One of the emojis failed to react.'));
-                    });
+                        const queueConstruct = {
+                            textChannel: message.channel,
+                            voiceChannel: voiceChannel,
+                            connection: null,
+                            dispatcher: null,
+                            songs: [],
+                            playing: true
+                        }
 
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.play(vid.url);
-            
-                        dispatcher.on('finish', () => {
-                            voiceChannel.leave();
+                        queue.set(message.guild.id, queueConstruct);
+
+                        queueConstruct.songs.push(song);
+
+                        try {
                             
-                            var para = parar_musica[Math.floor(Math.random() * parar_musica.length)];
+                            const connection = voiceChannel.join();
 
-                            message.channel.send(para);
+                            queueConstruct.connection = connection;
 
-                        }),
-                        dispatcher.on('error', console.error);
-                    });
+                            reprod(message.guild, queueConstruct, repro, queue, serverQueue);
+
+                        }
+                        catch (error) {
+                            
+                            console.log(error);
+
+                            queue.delete(message.guild.id);
+
+                        }
+
+                    }
+                    else{
+
+                        serverQueue.songs.push(song);
+
+                        message.channel.send(`agregué **${song.title}** a la cola.`);
+
+                    }
 
                 }
 
@@ -111,37 +127,54 @@ module.exports = {
                     const song = {
                         title: songInfo.title,
                         url: songInfo.video_url,
-                        autor: songInfo.author.name
+                        autor: songInfo.author.name,
+                        usuario: user
                     };
 
                     var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
 
-                    const playEmbed = new Discord.MessageEmbed()
-                    .setColor("#8b3dbd")
-                    .setTitle(repro)
-                    .setDescription(`[${song.title}](${song.url}) \n**Autor:** ${song.autor} \n**Puesta por:** ${user}`);
+                    if (!serverQueue){
 
-                    message.channel.send(playEmbed).then(sentMessage => {
-                        sentMessage.react('⏪')
-                        .then(() => sentMessage.react('⏯'))
-                        .then(() => sentMessage.react('⏩'))
-                        .catch(() => console.error('One of the emojis failed to react.'));
-                    });
+                        const queueConstruct = {
 
+                            textChannel: message.channel,
+                            voiceChannel: voiceChannel,
+                            connection: null,
+                            dispatcher: null,
+                            songs: [],
+                            playing: true
 
-                    voiceChannel.join().then(connection => {
-                        const stream = ytdl(args[0], { filter: 'audioonly' });
-                        const dispatcher = connection.play(stream);
-            
-                        dispatcher.on('finish', () => {
-                            voiceChannel.leave();
+                        }
 
-                            var para = parar_musica[Math.floor(Math.random() * parar_musica.length)];
+                        queue.set(message.guild.id, queueConstruct);
 
-                            message.channel.send(para);
+                        queueConstruct.songs.push(song);
 
-                        });
-                    });
+                        try {
+                            
+                            const connection = voiceChannel.join();
+
+                            queueConstruct.connection = connection;
+
+                            reprod(message.guild, queueConstruct, repro, queue, serverQueue);
+
+                        }
+                        catch (error) {
+
+                            console.log(error);
+
+                            queue.delete(message.guild.id);
+                            
+                        }
+
+                    }
+                    else{
+
+                        serverQueue.songs.push(song);
+
+                        message.channel.send(`agregué **${song.title}** a la cola.`);
+
+                    }
 
                 }
 
@@ -159,39 +192,54 @@ module.exports = {
                             url: videos[0].url,
                             autor: videos[0].author.name,
                             duration: videos[0].timestamp,
-                            img: videos[0].image
+                            img: videos[0].image,
+                            usuario: user
                         };
 
                         const voiceChannel = message.member.voice.channel;
-    
-                        var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
-    
-                        const playEmbed = new Discord.MessageEmbed()
-                        .setColor("#8b3dbd")
-                        .setTitle(repro)
-                        .setThumbnail(video.img)
-                        .setDescription(`**[${video.title}](${video.url})** \n**Autor:** ${video.autor} \n**Duración:** ${video.duration} \n**Puesta por:** ${user}`);
-                
-                        voiceChannel.join().then(connection => {
-                            const stream = ytdl(video.url, { filter: 'audioonly' });
-                            const dispatcher = connection.play(stream);
-                    
-                            dispatcher.on('finish', () => {
-                                voiceChannel.leave();
 
-                                var para = parar_musica[Math.floor(Math.random() * parar_musica.length)];
+                        if (!serverQueue){
 
-                                message.channel.send(para);
+                            const queueConstruct = {
+                                textChannel: message.channel,
+                                voiceChannel: voiceChannel,
+                                connection: null,
+                                dispatcher: null,
+                                songs: [],
+                                playing: true
+                            };
 
-                            });
-                        });
-    
-                        message.channel.send(playEmbed).then(sentMessage => {
-                            sentMessage.react('⏪')
-                            .then(() => sentMessage.react('⏯'))
-                            .then(() => sentMessage.react('⏩'))
-                            .catch(() => console.error('One of the emojis failed to react.'));
-                        });
+                            var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
+
+                            queue.set(message.guild.id, queueConstruct);
+
+                            queueConstruct.songs.push(video);
+
+                            try{
+
+                                const connection = voiceChannel.join();
+
+                                queueConstruct.connection = connection;
+
+                                reprod(message.guild, queueConstruct, repro, queue, serverQueue);
+
+                            }
+                            catch (err){
+
+                                console.log(err);
+
+                                queue.delete(message.guild.id);
+
+                            }
+
+                        }
+                        else{
+
+                            serverQueue.songs.push(video);
+
+                            message.channel.send(`agregué **${video.title}** a la cola.`)
+
+                        }
             
                     });
 
@@ -208,3 +256,84 @@ module.exports = {
         }
 	}
 };
+
+function reprod(guild, construct, msg, queue, serverQueue) {
+
+    serverQueue = queue.get(guild.id);
+
+    const playEmbed = new Discord.MessageEmbed();
+
+    var song = construct.songs[0];
+
+    var stream;
+
+    try {
+        
+        if (!song) {
+            serverQueue.voiceChannel.leave();
+            queue.delete(guild.id);
+            serverQueue.textChannel.send(`Se acabo la musica.`);
+        }
+
+        if(typeof song.autor === "undefined"){
+
+            stream = song.url;
+
+            playEmbed
+            .setColor("#8b3dbd")
+            .setTitle(msg)
+            .setDescription(`**Video de: [${song.title}](${song.url})** \n**Puesta por:** ${song.usuario}`);
+        }
+
+        else if(typeof song.img === "undefined"){
+
+            stream = ytdl(song.url, { filter: 'audioonly' });
+
+            playEmbed
+            .setColor("#8b3dbd")
+            .setTitle(msg)
+            .setDescription(`[${song.title}](${song.url}) \n**Autor:** ${song.autor} \n**Puesta por:** ${song.usuario}`);
+        }
+
+        else if(song.img){
+
+            stream = ytdl(song.url, { filter: 'audioonly' });
+
+            playEmbed
+            .setColor("#8b3dbd")
+            .setTitle(msg)
+            .setThumbnail(song.img)
+            .setDescription(`**[${song.title}](${song.url})** \n**Autor:** ${song.autor} \n**Duración:** ${song.duration} \n**Puesta por:** ${song.usuario}`);
+        }
+
+        const connection = serverQueue.connection
+        connection.then(connection => {
+
+            const dispatcher = connection.play(stream);
+
+            construct.dispatcher = dispatcher;
+
+            
+            dispatcher.on('finish', () => {
+                
+                serverQueue.songs.shift();
+
+                reprod(guild, construct, msg, queue, serverQueue);
+
+            });
+            dispatcher.on("error", error => console.error(error));
+        });
+
+        serverQueue.textChannel.send(playEmbed).then(sentMessage => {
+            sentMessage.react('⏪')
+            .then(() => sentMessage.react('⏯'))
+            .then(() => sentMessage.react('⏩'))
+            .catch(() => console.error('One of the emojis failed to react.'));
+        });
+
+    }
+    catch (error) {
+        console.log(error);
+    }
+
+}
