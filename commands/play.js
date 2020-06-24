@@ -298,80 +298,85 @@ module.exports = {
                     const options = {
                         limit: 1
                     }
-                    
-                    ytsr( targetsong, options, function ( err, result ) {
 
-                        if ( err ) return message.reply("no encontre ninguna canción, intentalo otra vez.");
+                    try{
+                        ytsr( targetsong, options, function ( err, result ) {
 
-                        else if(result.items.length <= 0) return message.reply(`no encontre ninguna canción, intentalo otra vez.`);
+                            if ( err ) return message.reply("no encontre ninguna canción, intentalo otra vez.");
 
-                        else if(result.items[0].type == "channel"){
-                            message.reply("no encontre ninguna canción, intentalo otra vez.");
-                        }
-                        else if(result.items[0].type == "playlist"){
-                            message.reply("encontré una playlist, pero no una canción. \n(*estoy trabajando en eso :eyes:*).");
-                        }
+                            else if(result.items.length <= 0) return message.reply(`no encontre ninguna canción, intentalo otra vez.`);
 
-                        else{
-
-                            const videos = result.items[0];
-
-                            const video = {
-                                title: videos.title,
-                                url: videos.link,
-                                autor: videos.author.name,
-                                duration: videos.duration,
-                                img: videos.thumbnail,
-                                usuario: user
-                            };
-
-                            const voiceChannel = message.member.voice.channel;
-
-                            if (!serverQueue){
-
-                                const queueConstruct = {
-                                    textChannel: message.channel,
-                                    voiceChannel: voiceChannel,
-                                    connection: null,
-                                    dispatcher: null,
-                                    songs: [],
-                                    playing: true
-                                };
-
-                                var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
-
-                                queue.set(message.guild.id, queueConstruct);
-
-                                queueConstruct.songs.push(video);
-
-                                try{
-
-                                    const connection = voiceChannel.join();
-
-                                    queueConstruct.connection = connection;
-
-                                    reprod(message.guild, queueConstruct, repro, queue, serverQueue);
-
-                                }
-                                catch (err){
-
-                                    console.log(err);
-
-                                    queue.delete(message.guild.id);
-
-                                }
-
+                            else if(result.items[0].type == "channel"){
+                                message.reply("no encontre ninguna canción, intentalo otra vez.");
                             }
+                            else if(result.items[0].type == "playlist"){
+                                message.reply("encontré una playlist, pero no una canción. \n(*estoy trabajando en eso :eyes:*).");
+                            }
+
                             else{
 
-                                serverQueue.songs.push(video);
+                                const videos = result.items[0];
 
-                                message.channel.send(`agregué **${video.title}** a la cola.`)
+                                const video = {
+                                    title: videos.title,
+                                    url: videos.link,
+                                    autor: videos.author.name,
+                                    duration: videos.duration,
+                                    img: videos.thumbnail,
+                                    usuario: user
+                                };
 
+                                const voiceChannel = message.member.voice.channel;
+
+                                if (!serverQueue){
+
+                                    const queueConstruct = {
+                                        textChannel: message.channel,
+                                        voiceChannel: voiceChannel,
+                                        connection: null,
+                                        dispatcher: null,
+                                        songs: [],
+                                        playing: true
+                                    };
+
+                                    var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
+
+                                    queue.set(message.guild.id, queueConstruct);
+
+                                    queueConstruct.songs.push(video);
+
+                                    try{
+
+                                        const connection = voiceChannel.join();
+
+                                        queueConstruct.connection = connection;
+
+                                        reprod(message.guild, queueConstruct, repro, queue, serverQueue);
+
+                                    }
+                                    catch (err){
+
+                                        console.log(err);
+
+                                        queue.delete(message.guild.id);
+
+                                    }
+
+                                }
+                                else{
+
+                                    serverQueue.songs.push(video);
+
+                                    message.channel.send(`agregué **${video.title}** a la cola.`)
+
+                                }
                             }
-                        }
-            
-                    });
+                
+                        });
+                    }
+                    catch(err){
+                        message.reply('Llamen a Kemill porque no conozco este error... :s');
+                    }
 
                 }
 
