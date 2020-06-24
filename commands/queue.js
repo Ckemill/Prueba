@@ -17,7 +17,7 @@ module.exports = {
                 titulos.push(i+") **["+canciones[i].title+"]("+canciones[i].url+")**");
             }
 
-            const lista = titulos.join("\n\n");
+            const lista = titulos.join("\n");
 
             const colaEmbed = new Discord.MessageEmbed()
             .setColor("#8b3dbd")

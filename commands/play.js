@@ -1,9 +1,12 @@
 const fs = require('fs');
+const ytpl = require('ytpl');
+const ytsr = require('ytsr');
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
 const fb = require("fb-video-downloader");
 const { prefix } = require("../config.json");
+const { promises } = require('dns');
 
 module.exports = {
 	name: 'play',
@@ -114,7 +117,117 @@ module.exports = {
 
                     //Playlist link
 
-                    message.reply("aún estoy trabajando con las listas de reproducción.");
+                    if(!serverQueue){
+                        message.reply('pon cualquier cancion antes de agregar una playlist. \n(*estoy trabajando para solucionar esto.*)');
+                    }
+
+                    else{
+
+                        opts = {
+                            limit: 25
+                        }
+
+                        var playlist;
+
+                        const listEmbed = new Discord.MessageEmbed();
+
+                        var lista;
+
+                        const canciones = [];
+
+                        ytpl(args[0], opts, function(err, info) {
+                            if(err) throw err;
+
+                            playlist = {
+                                title: info.title,
+                                url: info.url,
+                                canciones: info.total_items,
+                                autor: info.author.name,
+                                avatar: info.author.avatar,
+                                canal: info.author.channel_url
+                            }
+
+                            listEmbed
+                            .setColor("#8b3dbd")
+                            .setTitle(playlist.title)
+                            .setDescription(`agregando **25** de **${playlist.canciones}** canciones.`)
+                            .setAuthor(playlist.autor, playlist.avatar, playlist.canal)
+                            .setURL(playlist.url);
+
+                            message.channel.send(listEmbed);
+
+                            lista = info.items;
+
+                            for (var i = 0; i < lista.length; i++) {
+                                canciones.push(lista[i].url_simple);
+                            }
+
+                            for (var i = 0; i < canciones.length; i++){
+
+                                ytdl.getInfo(canciones[i], function(err, info){
+                                    if(err) throw err;
+
+                                    const songInfo = info;
+            
+                                    const song = {
+                                        title: songInfo.title,
+                                        url: songInfo.video_url,
+                                        autor: songInfo.author.name,
+                                        usuario: user
+                                    };
+            
+                                    var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
+            
+                                    if (!serverQueue){
+            
+                                        /*const queueConstruct = {
+            
+                                            textChannel: message.channel,
+                                            voiceChannel: voiceChannel,
+                                            connection: null,
+                                            dispatcher: null,
+                                            songs: [],
+                                            playing: true
+            
+                                        }
+            
+                                        queue.set(message.guild.id, queueConstruct);
+            
+                                        queueConstruct.songs.push(song);
+            
+                                        try {
+                                                
+                                            const connection = voiceChannel.join();
+            
+                                            queueConstruct.connection = connection;
+            
+                                            reprod(message.guild, queueConstruct, repro, queue, serverQueue);
+            
+                                        }
+                                        catch (error) {
+            
+                                            console.log(error);
+            
+                                            queue.delete(message.guild.id);
+                                                
+                                        }*/
+            
+                                    }
+                                    else{
+            
+                                        serverQueue.songs.push(song);
+            
+                                        //message.channel.send(`${i}) agregué **${song.title}** a la cola.`);
+            
+                                    }
+
+                                });
+        
+                            }
+
+                        });
+
+                    }
 
                 }
 
@@ -182,63 +295,80 @@ module.exports = {
 
                     //Buscar cancion
 
-                    yts( targetsong, function ( err, r ) {
+                    const options = {
+                        limit: 1
+                    }
+                    
+                    ytsr( targetsong, options, function ( err, result ) {
+
                         if ( err ) return message.reply("no encontre ninguna canción, intentalo otra vez.");
-            
-                        const videos = r.videos;
 
-                        const video = {
-                            title: videos[0].title,
-                            url: videos[0].url,
-                            autor: videos[0].author.name,
-                            duration: videos[0].timestamp,
-                            img: videos[0].image,
-                            usuario: user
-                        };
+                        else if(result.items.length <= 0) return message.reply(`no encontre ninguna canción, intentalo otra vez.`);
 
-                        const voiceChannel = message.member.voice.channel;
-
-                        if (!serverQueue){
-
-                            const queueConstruct = {
-                                textChannel: message.channel,
-                                voiceChannel: voiceChannel,
-                                connection: null,
-                                dispatcher: null,
-                                songs: [],
-                                playing: true
-                            };
-
-                            var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
-
-                            queue.set(message.guild.id, queueConstruct);
-
-                            queueConstruct.songs.push(video);
-
-                            try{
-
-                                const connection = voiceChannel.join();
-
-                                queueConstruct.connection = connection;
-
-                                reprod(message.guild, queueConstruct, repro, queue, serverQueue);
-
-                            }
-                            catch (err){
-
-                                console.log(err);
-
-                                queue.delete(message.guild.id);
-
-                            }
-
+                        else if(result.items[0].type == "channel"){
+                            message.reply("no encontre ninguna canción, intentalo otra vez.");
                         }
+                        else if(result.items[0].type == "playlist"){
+                            message.reply("encontré una playlist, pero no una canción. \n(*estoy trabajando en eso :eyes:*).");
+                        }
+
                         else{
 
-                            serverQueue.songs.push(video);
+                            const videos = result.items[0];
 
-                            message.channel.send(`agregué **${video.title}** a la cola.`)
+                            const video = {
+                                title: videos.title,
+                                url: videos.link,
+                                autor: videos.author.name,
+                                duration: videos.duration,
+                                img: videos.thumbnail,
+                                usuario: user
+                            };
 
+                            const voiceChannel = message.member.voice.channel;
+
+                            if (!serverQueue){
+
+                                const queueConstruct = {
+                                    textChannel: message.channel,
+                                    voiceChannel: voiceChannel,
+                                    connection: null,
+                                    dispatcher: null,
+                                    songs: [],
+                                    playing: true
+                                };
+
+                                var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
+
+                                queue.set(message.guild.id, queueConstruct);
+
+                                queueConstruct.songs.push(video);
+
+                                try{
+
+                                    const connection = voiceChannel.join();
+
+                                    queueConstruct.connection = connection;
+
+                                    reprod(message.guild, queueConstruct, repro, queue, serverQueue);
+
+                                }
+                                catch (err){
+
+                                    console.log(err);
+
+                                    queue.delete(message.guild.id);
+
+                                }
+
+                            }
+                            else{
+
+                                serverQueue.songs.push(video);
+
+                                message.channel.send(`agregué **${video.title}** a la cola.`)
+
+                            }
                         }
             
                     });
