@@ -19,7 +19,6 @@ module.exports = {
             const serverQueue = queue.get(message.guild.id);
 
             try{
-                voiceBot = serverQueue.voiceChannel;
 
                 if (voiceChannel != serverQueue.voiceChannel){
                     message.reply(`No estas en el mismo voice que yo.`);

@@ -12,22 +12,32 @@ module.exports = {
         if (!voiceChannel){
             message.reply("Tienes que estar en un voice");
         }
+        else{
 
-        try{
-            var para = parar_musica[Math.floor(Math.random() * parar_musica.length)];
+            try{
+                var para = parar_musica[Math.floor(Math.random() * parar_musica.length)];
 
-            voiceChannel.leave();
+                const serverQueue = queue.get(message.guild.id);
 
-            message.channel.send(para);
+                if(voiceChannel != serverQueue.voiceChannel){
+                    message.reply(`No estas en el mismo voice que yo.`);
+                }
+                else if(!serverQueue.dispatcher){
+                    message.reply(`no hay nada que parar.`)
+                }
+                else{
+                    voiceChannel.leave();
 
-            queue.delete(message.guild.id);
+                    message.channel.send(para);
 
-            return;
-        }
-        catch (err){
-            console.log("error" +err);
-        }
+                    queue.delete(message.guild.id);
+                }
+            }
+            catch (err){
+                voiceChannel.leave();
+                message.reply('Ni siquiera estoy en un voice.');
+            }
         
-
+        }
     }
 }
