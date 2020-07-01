@@ -407,7 +407,11 @@ function reprod(guild, construct, msg, queue, serverQueue) {
         if (!song) {
             serverQueue.voiceChannel.leave();
             queue.delete(guild.id);
-            serverQueue.textChannel.send(`Se acabo la musica.`);
+            serverQueue.textChannel.send(`Se acabo la musica.`)
+            .then(msg => {
+                msg.delete({ timeout: 10000 })
+            })
+            .catch(console.error);
         }
 
         if(typeof song.autor === "undefined"){
@@ -443,10 +447,18 @@ function reprod(guild, construct, msg, queue, serverQueue) {
 
         const connection = serverQueue.connection
         connection.then(connection => {
+            connection.voice.setSelfDeaf(true);
 
             const dispatcher = connection.play(stream);
 
             construct.dispatcher = dispatcher;
+
+            serverQueue.textChannel.send(playEmbed).then(sentMessage => {
+                sentMessage.react('⏪')
+                .then(() => sentMessage.react('⏯'))
+                .then(() => sentMessage.react('⏩'))
+                .catch(() => console.error('One of the emojis failed to react.'));
+            });
 
             
             dispatcher.on('finish', () => {
@@ -457,13 +469,6 @@ function reprod(guild, construct, msg, queue, serverQueue) {
 
             });
             dispatcher.on("error", error => console.error(error));
-        });
-
-        serverQueue.textChannel.send(playEmbed).then(sentMessage => {
-            sentMessage.react('⏪')
-            .then(() => sentMessage.react('⏯'))
-            .then(() => sentMessage.react('⏩'))
-            .catch(() => console.error('One of the emojis failed to react.'));
         });
 
     }
