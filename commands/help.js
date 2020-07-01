@@ -22,6 +22,7 @@ module.exports = {
             {name: '**'+prefix+'stop**', value: "Detengo la musica y salgo de la llamada. \n*(Debes estar en mi voice para usarlo.)*", inline: false},
             {name: '**'+prefix+'queue**', value: "Muestro la lista de musicas en cola. \n*(Puedes usarlo a libertad.)*", inline: false},
             {name: '**'+prefix+'skip**', value: "Paso a la siguiente cancion de la cola. \n*(Debes estar en mi voice para usarlo. \nSi no hay una siguiente canción hago lo mismo que **"+prefix+"stop**.)*", inline: false},
+            {name: '**'+prefix+'eco**', value: "Digo lo que escribes en el voice. \n*(Debes estar en mi voice para usarlo.)*", inline: false},
             {name: '**'+prefix+'frase**', value: "Agrega frases para mis comandos. \n*(Usa **"+prefix+"frase** para ver como usarlo.)*", inline: false}
         )
         .setTimestamp(fecha)
