@@ -17,7 +17,7 @@ module.exports = {
 
         if (args.length > 0){
             
-            message.reply(`Solo escribe normalmente luego de poner **\`${prefix}echo\`** :3`);
+            message.reply(`Envía **\`${prefix}echo\`** y luego escribe normalmente.`);
 
         }
 
