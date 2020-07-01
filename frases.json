@@ -1,6 +1,6 @@
 {
     "ayuda":["Mis comandos:"],
-    "no_voice":["ajá, y donde lo pongo si no estas en un voice?"],
+    "no_voice":["ajá, y donde lo pongo si no estas en un voice?", "tienes que estar en un voice."],
     "reproducir":["Reproduciendo"],
     "no_permisos":["¿que hay que hacer pa' sacar rango aqui?"],
     "canal_musica":["por favor usa el canal de **musica**."],

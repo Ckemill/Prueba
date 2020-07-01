@@ -3,7 +3,7 @@ var tts = require('google-tts-api');
 const { prefix } = require("../config.json");
 
 module.exports = {
-	name: 'eco',
+	name: 'echo',
     description: 'I speak for you!',
 	async execute(client, message, args, queue) {
 
@@ -15,46 +15,55 @@ module.exports = {
 
         const voiceChannel = message.member.voice.channel;
 
-        if(!voiceChannel){
+        if (args.length > 0){
+            
+            message.reply(`Solo escribe normalmente luego de poner **\`${prefix}echo\`** :3`);
+
+        }
+
+        else if (!voiceChannel){
             var novoice = no_voice[Math.floor(Math.random() * no_voice.length)];
             return message.reply(novoice);
         }
 
-		try{
-
-            const serverQueue = queue.get(message.guild.id);
+        else{
 
             try{
 
-                if (voiceChannel != serverQueue.voiceChannel){
-                    message.reply(`No estas en el mismo voice que yo.`);
+                const serverQueue = queue.get(message.guild.id);
+
+                try{
+
+                    if (voiceChannel != serverQueue.voiceChannel){
+                        message.reply(`No estas en el mismo voice que yo.`);
+                    }
+
+                    else if (serverQueue.dispatcher){
+                        message.reply(`estoy tocando musica!`);
+                    }
+
+                    else{
+
+                        message.reply('emmm...');
+
+                    }
+                }
+                catch{
+
+                    message.reply(`ahora repetiré todo lo que escribas en el voice! \n*Escribe **\`stop\`** para dejar de copiarte.*`);
+                    
+                    const connection = voiceChannel.join()
+
+                    eco(message ,user, voiceChannel, connection);
+
                 }
 
-                else if (serverQueue.dispatcher){
-                    message.reply(`estoy tocando musica!`);
-                }
-
-                else{
-
-                    message.reply('emmm...');
-
-                }
             }
-            catch{
+            catch(err){
 
-                message.reply(`ahora repetiré todo lo que escribas en el voice! \n*Escribe **\`stop\`** para dejar de copiarte.*`);
-                
-                const connection = voiceChannel.join()
-
-                eco(message ,user, voiceChannel, connection);
+                console.log(err);
 
             }
-
-        }
-        catch(err){
-
-            console.log(err);
-
         }
 
 	}
@@ -81,7 +90,7 @@ function eco(message, user, voiceChannel, voz){
 
                 else{
 
-                    tts(collected.first().content, 'es-DO', 1)
+                    tts(collected.first().content, 'es-US', 1)
                     .then(function (url) {
 
                         voz.then((connection) => {
