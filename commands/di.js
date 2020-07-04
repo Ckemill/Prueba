@@ -11,13 +11,11 @@ module.exports = {
 
         const { no_voice } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
-        const text = args.join(' ');
-
         const voiceChannel = message.member.voice.channel;
 
         if (args.length > 0){
             
-            message.reply(`Envía **\`${prefix}echo\`** y luego escribe normalmente.`);
+            message.reply(`envía **\`${prefix}echo\`** y luego escribe normalmente.`);
 
         }
 
@@ -52,7 +50,7 @@ module.exports = {
 
                     message.reply(`ahora repetiré todo lo que escribas en el voice! \n*Escribe **\`stop\`** para dejar de copiarte.*`);
                     
-                    const connection = voiceChannel.join()
+                    const connection = voiceChannel.join();
 
                     eco(message ,user, voiceChannel, connection);
 
@@ -80,6 +78,7 @@ function eco(message, user, voiceChannel, voz){
 
                     message.reply(`vale, dejaré de copiarte.`);
                     voiceChannel.leave();
+                    return;
 
                 }
 
@@ -90,7 +89,10 @@ function eco(message, user, voiceChannel, voz){
 
                 else{
 
-                    tts(collected.first().content, 'es-US', 1)
+                    var nombre = collected.first().author.username;
+                    var texto = collected.first().content;
+
+                    tts(`${nombre} dice. ${texto}`, 'es-US', 1)
                     .then(function (url) {
 
                         voz.then((connection) => {
@@ -113,7 +115,8 @@ function eco(message, user, voiceChannel, voz){
                 }
 
             })
-            .catch(() => {
+            .catch((err) => {
+                console.log(err);
                 message.reply(`no haz escrito nada en 1 minuto, dejaré de copiarte.`);
                 voiceChannel.leave();
             })

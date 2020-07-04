@@ -412,68 +412,73 @@ function reprod(guild, construct, msg, queue, serverQueue) {
                 msg.delete({ timeout: 10000 })
             })
             .catch(console.error);
+            return;
         }
+        else{
 
-        if(typeof song.autor === "undefined"){
+            if(typeof song.autor === "undefined"){
 
-            stream = song.url;
+                stream = song.url;
 
-            playEmbed
-            .setColor("#8b3dbd")
-            .setTitle(msg)
-            .setDescription(`**Video de: [${song.title}](${song.url})** \n**Puesta por:** ${song.usuario}`);
-        }
+                playEmbed
+                .setColor("#8b3dbd")
+                .setTitle(msg)
+                .setDescription(`**Video de: [${song.title}](${song.url})** \n**Puesta por:** ${song.usuario}`);
+            }
 
-        else if(typeof song.img === "undefined"){
+            else if(typeof song.img === "undefined"){
 
-            stream = ytdl(song.url, { filter: 'audioonly' });
+                stream = ytdl(song.url, { filter: 'audioonly', quality: "highestaudio" });
 
-            playEmbed
-            .setColor("#8b3dbd")
-            .setTitle(msg)
-            .setDescription(`[${song.title}](${song.url}) \n**Autor:** ${song.autor} \n**Puesta por:** ${song.usuario}`);
-        }
+                playEmbed
+                .setColor("#8b3dbd")
+                .setTitle(msg)
+                .setDescription(`[${song.title}](${song.url}) \n**Autor:** ${song.autor} \n**Puesta por:** ${song.usuario}`);
+            }
 
-        else if(song.img){
+            else if(song.img){
 
-            stream = ytdl(song.url, { filter: 'audioonly' });
+                stream = ytdl(song.url, { filter: 'audioonly', quality: "highestaudio" });
 
-            playEmbed
-            .setColor("#8b3dbd")
-            .setTitle(msg)
-            .setThumbnail(song.img)
-            .setDescription(`**[${song.title}](${song.url})** \n**Autor:** ${song.autor} \n**Duración:** ${song.duration} \n**Puesta por:** ${song.usuario}`);
-        }
-
-        const connection = serverQueue.connection
-        connection.then(connection => {
-            connection.voice.setSelfDeaf(true);
-
-            const dispatcher = connection.play(stream);
-
-            construct.dispatcher = dispatcher;
-
+                playEmbed
+                .setColor("#8b3dbd")
+                .setTitle(msg)
+                .setThumbnail(song.img)
+                .setDescription(`**[${song.title}](${song.url})** \n**Autor:** ${song.autor} \n**Duración:** ${song.duration} \n**Puesta por:** ${song.usuario}`);
+            }
             serverQueue.textChannel.send(playEmbed).then(sentMessage => {
                 sentMessage.react('⏪')
                 .then(() => sentMessage.react('⏯'))
                 .then(() => sentMessage.react('⏩'))
-                .catch(() => console.error('One of the emojis failed to react.'));
+                .catch(() => console.error('One of the emojis failed to react.'))
+
+                const connection = serverQueue.connection
+                connection.then(connection => {
+                    connection.voice.setSelfDeaf(true);
+
+                    const dispatcher = connection.play(stream);
+
+                    construct.dispatcher = dispatcher;
+                    
+                    dispatcher.on('finish', () => {
+                        
+                        serverQueue.songs.shift();
+
+                        sentMessage.delete();
+
+                        reprod(guild, construct, msg, queue, serverQueue);
+
+                    });
+                    dispatcher.on("error", error => console.error(error));
+                });
+
             });
-
-            
-            dispatcher.on('finish', () => {
-                
-                serverQueue.songs.shift();
-
-                reprod(guild, construct, msg, queue, serverQueue);
-
-            });
-            dispatcher.on("error", error => console.error(error));
-        });
+        }
 
     }
     catch (error) {
         console.log(error);
+        return;
     }
 
 }

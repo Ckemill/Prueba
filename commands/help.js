@@ -22,7 +22,7 @@ module.exports = {
             {name: '**'+prefix+'stop**', value: "Detengo la musica y salgo de la llamada.", inline: false},
             {name: '**'+prefix+'queue**', value: "Muestro la lista de musicas en cola.", inline: false},
             {name: '**'+prefix+'skip**', value: "Paso a la siguiente cancion de la cola. \n*(Si no hay una siguiente canción hago lo mismo que **"+prefix+"stop**.)*", inline: false},
-            {name: '**'+prefix+'echo**', value: "Digo lo que escribes en el voice.", inline: false},
+            {name: '**'+prefix+'echo**', value: "Hablaré por ti lo que escribas.", inline: false},
             {name: '**'+prefix+'frase**', value: "Agrega frases para mis comandos. \n*(Usa **"+prefix+"frase** para ver como usarlo.)*", inline: false}
         )
         .setTimestamp(fecha)
