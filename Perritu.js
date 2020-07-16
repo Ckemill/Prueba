@@ -1,5 +1,4 @@
 const discord = require("discord.js");
-const db = require('./database');
 const client = new discord.Client();
 const fs = require('fs');
 const { readdirSync } = require("fs");
