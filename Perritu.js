@@ -1,4 +1,5 @@
 const discord = require("discord.js");
+const db = require('./database');
 const client = new discord.Client();
 const fs = require('fs');
 const { readdirSync } = require("fs");
@@ -72,6 +73,122 @@ client.on('message', message => {
         message.reply(`Recuerda usar **${prefix}** antes de un comando :3`);
     }
 
+});
+
+client.on('messageReactionAdd', (reaction, user) => {
+    if(!user.bot){
+        const emoji = reaction._emoji;
+        const voiceChannel = reaction.message.member.voice.channel;
+
+        const { no_voice } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
+
+        try {
+
+            const serverQueue = queue.get(reaction.message.guild.id);
+
+            if(serverQueue){
+
+                try {
+
+                    if(serverQueue.reaction === reaction.message.id){
+
+                        if (!voiceChannel){
+                            var novoice = no_voice[Math.floor(Math.random() * no_voice.length)];
+                            return reaction.message.reply(novoice);
+                        }
+                        
+                        else if (voiceChannel != serverQueue.voiceChannel){
+                            reaction.message.reply(`No estas en el mismo voice que yo.`);
+                        }
+
+                        else if (!serverQueue.dispatcher){
+                            reaction.message.reply(`no hay nada sonando.`);
+                        }
+
+                        else{
+
+                            if(emoji.name == '⏯'){
+                                serverQueue.dispatcher.pause();
+                            }
+                            else if(emoji.name == '⏹'){
+                                voiceChannel.leave();
+                                reaction.message.delete();
+                                queue.delete(reaction.message.guild.id);
+                            }
+                            else if(emoji.name == '⏭'){
+                                if (!serverQueue.songs){
+                                    message.reply(`no hay nada que skipear.`);
+                                }
+                                else{
+                                    try{
+                                        serverQueue.dispatcher.end();
+                                    }
+                                    catch (err){
+                                        console.log("error" +err);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+                } catch {
+                    reaction.message.reply('ni siquiera estoy en un voice');
+                }
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+});
+
+client.on('messageReactionRemove', (reaction, user) => {
+    if(!user.bot){
+        const emoji = reaction._emoji;
+        const voiceChannel = reaction.message.member.voice.channel;
+
+        const { no_voice } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
+
+        try {
+
+            const serverQueue = queue.get(reaction.message.guild.id);
+
+            if(serverQueue){
+
+                try {
+
+                    if(serverQueue.reaction === reaction.message.id){
+
+                        if (!voiceChannel){
+                            var novoice = no_voice[Math.floor(Math.random() * no_voice.length)];
+                            return reaction.message.reply(novoice);
+                        }
+                            
+                        else if (voiceChannel != serverQueue.voiceChannel){
+                            reaction.message.reply(`No estas en el mismo voice que yo.`);
+                        }
+
+                        else if (!serverQueue.dispatcher){
+                            reaction.message.reply(`no hay nada sonando.`);
+                        }
+
+                        else{
+
+                            if(emoji.name == '⏯'){
+                                serverQueue.dispatcher.resume();
+                            }
+
+                        }
+                    }
+
+                } catch {
+                    reaction.message.reply('ni siquiera estoy en un voice');
+                }
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
 });
 
 //Activar a Perritu:

@@ -68,8 +68,6 @@ module.exports = {
                         usuario: user
                     };
 
-                    var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
-
                     if(!serverQueue){
 
                         const queueConstruct = {
@@ -77,6 +75,7 @@ module.exports = {
                             voiceChannel: voiceChannel,
                             connection: null,
                             dispatcher: null,
+                            reaction: null,
                             songs: [],
                             playing: true
                         }
@@ -91,7 +90,7 @@ module.exports = {
 
                             queueConstruct.connection = connection;
 
-                            reprod(message.guild, queueConstruct, repro, queue, serverQueue);
+                            reprod(message.guild, queueConstruct, reproducir, queue, serverQueue);
 
                         }
                         catch (error) {
@@ -176,8 +175,6 @@ module.exports = {
                                         usuario: user
                                     };
             
-                                    var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
-            
                                     if (!serverQueue){
             
                                         /*const queueConstruct = {
@@ -186,6 +183,7 @@ module.exports = {
                                             voiceChannel: voiceChannel,
                                             connection: null,
                                             dispatcher: null,
+                                            reaction: null,
                                             songs: [],
                                             playing: true
             
@@ -244,8 +242,6 @@ module.exports = {
                         usuario: user
                     };
 
-                    var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
-
                     if (!serverQueue){
 
                         const queueConstruct = {
@@ -254,6 +250,7 @@ module.exports = {
                             voiceChannel: voiceChannel,
                             connection: null,
                             dispatcher: null,
+                            reaction: null,
                             songs: [],
                             playing: true
 
@@ -269,7 +266,7 @@ module.exports = {
 
                             queueConstruct.connection = connection;
 
-                            reprod(message.guild, queueConstruct, repro, queue, serverQueue);
+                            reprod(message.guild, queueConstruct, reproducir, queue, serverQueue);
 
                         }
                         catch (error) {
@@ -335,11 +332,10 @@ module.exports = {
                                         voiceChannel: voiceChannel,
                                         connection: null,
                                         dispatcher: null,
+                                        reaction: null,
                                         songs: [],
                                         playing: true
                                     };
-
-                                    var repro = reproducir[Math.floor(Math.random() * reproducir.length)];
 
                                     queue.set(message.guild.id, queueConstruct);
 
@@ -351,7 +347,7 @@ module.exports = {
 
                                         queueConstruct.connection = connection;
 
-                                        reprod(message.guild, queueConstruct, repro, queue, serverQueue);
+                                        reprod(message.guild, queueConstruct, reproducir, queue, serverQueue);
 
                                     }
                                     catch (err){
@@ -392,7 +388,11 @@ module.exports = {
 	}
 };
 
-function reprod(guild, construct, msg, queue, serverQueue) {
+function reprod(guild, construct, repro, queue, serverQueue) {
+
+    const { reproducir } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
+
+    var msg = reproducir[Math.floor(Math.random() * reproducir.length)];
 
     serverQueue = queue.get(guild.id);
 
@@ -447,9 +447,10 @@ function reprod(guild, construct, msg, queue, serverQueue) {
                 .setDescription(`**[${song.title}](${song.url})** \n**Autor:** ${song.autor} \n**Duración:** ${song.duration} \n**Puesta por:** ${song.usuario}`);
             }
             serverQueue.textChannel.send(playEmbed).then(sentMessage => {
-                sentMessage.react('⏪')
+                construct.reaction = sentMessage.id;
+                sentMessage.react('⏹')
                 .then(() => sentMessage.react('⏯'))
-                .then(() => sentMessage.react('⏩'))
+                .then(() => sentMessage.react('⏭'))
                 .catch(() => console.error('One of the emojis failed to react.'))
 
                 const connection = serverQueue.connection
@@ -469,7 +470,10 @@ function reprod(guild, construct, msg, queue, serverQueue) {
                         reprod(guild, construct, msg, queue, serverQueue);
 
                     });
-                    dispatcher.on("error", error => console.error(error));
+                    dispatcher.on("error", error => {
+                        console.error(error);
+                        console.log(error);
+                    });
                 });
 
             });
