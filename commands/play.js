@@ -24,10 +24,15 @@ module.exports = {
         if(!message.member.voice.channel){
             //elegir frase de no voice al azar
             var novoice = no_voice[Math.floor(Math.random() * no_voice.length)];
-            return message.reply(novoice);
+            message.reply(novoice)
+            .then(msg => {
+                msg.delete({ timeout: 10000 })
+            })
+            .catch(console.error);
+            return
         }
 
-        if (message.channel.id === '733518588186722324' || message.channel.id === '379443661290733571' || message.channel.id === '719346636714803271') {
+        if (message.channel.id === '733518588186722324' || message.channel.id === '703314121801859184' || message.channel.id === '719346636714803271') {
 
             const voiceChannel = message.member.voice.channel;
             const permisos = voiceChannel.permissionsFor(message.client.user);
@@ -35,17 +40,32 @@ module.exports = {
             if (!voiceChannel){
                 //elegir frase de no voice al azar
                 var novoice = no_voice[Math.floor(Math.random() * no_voice.length)];
-                return message.reply(novoice);
+                message.reply(novoice)
+                .then(msg => {
+                    msg.delete({ timeout: 10000 })
+                })
+                .catch(console.error);
+                return
             }
 
             if (!permisos.has("CONNECT") || !permisos.has("SPEAK")) {
                 //elegir frase de no permisos al azar
                 var nopermisos = no_permisos[Math.floor(Math.random() * no_permisos.length)];
-                return message.reply(nopermisos);
+                message.reply(nopermisos)
+                .then(msg => {
+                    msg.delete({ timeout: 10000 })
+                })
+                .catch(console.error);
+                return
             }
             if(!args.length){
 
-                message.reply("Puedes usar un link de youtube/facebook o decirme que canción buscar. \n\r`"+prefix+"play link|canción`.");
+                message.reply("Puedes usar un link de youtube/facebook o decirme que canción buscar. \n\r`"+prefix+"play link|canción`.")
+                .then(msg => {
+                    msg.delete({ timeout: 10000 })
+                })
+                .catch(console.error);
+                return
             
             }
 
@@ -106,7 +126,11 @@ module.exports = {
 
                         serverQueue.songs.push(song);
 
-                        message.channel.send(`agregué **${song.title}** a la cola.`);
+                        message.channel.send(`agregué **${song.title}** a la cola.`)
+                        .then(msg => {
+                            msg.delete({ timeout: 10000 })
+                        })
+                        .catch(console.error);
 
                     }
 
@@ -117,13 +141,18 @@ module.exports = {
                     //Playlist link
 
                     if(!serverQueue){
-                        message.reply('pon cualquier cancion antes de agregar una playlist. \n(*estoy trabajando para solucionar esto.*)');
+                        message.reply('pon cualquier cancion antes de agregar una playlist. \n(*estoy trabajando para solucionar esto.*)')
+                        .then(msg => {
+                            msg.delete({ timeout: 10000 })
+                        })
+                        .catch(console.error);
+                        return;
                     }
 
                     else{
 
                         opts = {
-                            limit: 25
+                            limit: 0
                         }
 
                         var playlist;
@@ -149,7 +178,7 @@ module.exports = {
                             listEmbed
                             .setColor("#8b3dbd")
                             .setTitle(playlist.title)
-                            .setDescription(`agregando **25** de **${playlist.canciones}** canciones.`)
+                            .setDescription(`Agregando **${playlist.canciones}** canciones.`)
                             .setAuthor(playlist.autor, playlist.avatar, playlist.canal)
                             .setURL(playlist.url);
 
@@ -282,7 +311,11 @@ module.exports = {
 
                         serverQueue.songs.push(song);
 
-                        message.channel.send(`agregué **${song.title}** a la cola.`);
+                        message.channel.send(`agregué **${song.title}** a la cola.`)
+                        .then(msg => {
+                            msg.delete({ timeout: 10000 })
+                        })
+                        .catch(console.error);
 
                     }
 
@@ -297,17 +330,27 @@ module.exports = {
                     }
 
                     try{
-                        ytsr( targetsong, options, function ( err, result ) {
+                        ytsr( targetsong, options, async function ( err, result ) {
 
                             if ( err ) return message.reply("no encontre ninguna canción, intentalo otra vez.");
 
                             else if(result.items.length <= 0) return message.reply(`no encontre ninguna canción, intentalo otra vez.`);
 
                             else if(result.items[0].type == "channel"){
-                                message.reply("no encontre ninguna canción, intentalo otra vez.");
+                                message.reply("no encontre ninguna canción, intentalo otra vez.")
+                                .then(msg => {
+                                    msg.delete({ timeout: 10000 })
+                                })
+                                .catch(console.error);
+                                return;
                             }
                             else if(result.items[0].type == "playlist"){
-                                message.reply("encontré una playlist, pero no una canción. \n(*estoy trabajando en eso :eyes:*).");
+                                message.reply("encontré una playlist, pero no una canción. \n(*estoy trabajando en eso :eyes:*).")
+                                .then(msg => {
+                                    msg.delete({ timeout: 10000 })
+                                })
+                                .catch(console.error);
+                                return;
                             }
 
                             else{
@@ -364,6 +407,10 @@ module.exports = {
                                     serverQueue.songs.push(video);
 
                                     message.channel.send(`agregué **${video.title}** a la cola.`)
+                                    .then(msg => {
+                                        msg.delete({ timeout: 10000 })
+                                    })
+                                    .catch(console.error);
 
                                 }
                             }
@@ -371,7 +418,12 @@ module.exports = {
                         });
                     }
                     catch(err){
-                        message.reply('Llamen a Kemill porque no conozco este error... :s');
+                        message.reply('Llamen a Kemill porque no conozco este error... :s')
+                        .then(msg => {
+                            msg.delete({ timeout: 10000 })
+                        })
+                        .catch(console.error);
+                        return;
                     }
 
                 }
@@ -383,7 +435,12 @@ module.exports = {
             //elegir frase de canal musica al azar
             var canal = canal_musica[Math.floor(Math.random() * canal_musica.length)];
 
-            message.channel.send(canal);
+            message.channel.send(canal)
+            .then(msg => {
+                msg.delete({ timeout: 10000 })
+            })
+            .catch(console.error);
+            return;
         }
 	}
 };
@@ -447,7 +504,7 @@ function reprod(guild, construct, repro, queue, serverQueue) {
                 .setDescription(`**[${song.title}](${song.url})** \n**Autor:** ${song.autor} \n**Duración:** ${song.duration} \n**Puesta por:** ${song.usuario}`);
             }
             serverQueue.textChannel.send(playEmbed).then(sentMessage => {
-                construct.reaction = sentMessage.id;
+                construct.reaction = sentMessage;
                 sentMessage.react('⏹')
                 .then(() => sentMessage.react('⏯'))
                 .then(() => sentMessage.react('⏭'))
