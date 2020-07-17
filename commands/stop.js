@@ -10,7 +10,12 @@ module.exports = {
         const voiceChannel = message.member.voice.channel;
 
         if (!voiceChannel){
-            message.reply("Tienes que estar en un voice");
+            message.reply("Tienes que estar en un voice")
+            .then(msg => {
+                msg.delete({ timeout: 10000 })
+            })
+            .catch(console.error);
+            return
         }
         else{
 
@@ -19,23 +24,50 @@ module.exports = {
 
                 const serverQueue = queue.get(message.guild.id);
 
+                if(!serverQueue.voiceChannel){
+                    message.reply(`No estoy en ningun voice.`)
+                    .then(msg => {
+                        msg.delete({ timeout: 10000 })
+                    })
+                    .catch(console.error);
+                }
+
                 if(voiceChannel != serverQueue.voiceChannel){
-                    message.reply(`No estas en el mismo voice que yo.`);
+                    message.reply(`No estas en el mismo voice que yo.`)
+                    .then(msg => {
+                        msg.delete({ timeout: 10000 })
+                    })
+                    .catch(console.error);
                 }
                 else if(!serverQueue.dispatcher){
                     message.reply(`no hay nada que parar.`)
+                    .then(msg => {
+                        msg.delete({ timeout: 10000 })
+                    })
+                    .catch(console.error);
                 }
                 else{
                     voiceChannel.leave();
 
-                    message.channel.send(para);
+                    serverQueue.reaction.delete();
+
+                    message.channel.send(para)
+                    .then(msg => {
+                        msg.delete({ timeout: 10000 })
+                    })
+                    .catch(console.error);
 
                     queue.delete(message.guild.id);
                 }
             }
             catch (err){
+                console.log(err);
                 voiceChannel.leave();
-                message.reply('Ni siquiera estoy en un voice.');
+                message.reply('Ni siquiera estoy en un voice.')
+                .then(msg => {
+                    msg.delete({ timeout: 10000 })
+                })
+                .catch(console.error);
             }
         
         }

@@ -72,7 +72,7 @@ function eco(message, user, voiceChannel, voz){
     try {
 
         message.channel.awaitMessages(m => m.author.id == user,
-            {max: 1, time: 60000}).then(collected => {
+            {max: 1, time: 600000}).then(collected => {
 
                 if (collected.first().content.toLowerCase() == 'stop'){
 
@@ -117,7 +117,7 @@ function eco(message, user, voiceChannel, voz){
             })
             .catch((err) => {
                 console.log(err);
-                message.reply(`no haz escrito nada en 1 minuto, dejaré de copiarte.`);
+                message.reply(`no haz escrito nada en 10 minutos, dejaré de copiarte.`);
                 voiceChannel.leave();
             })
         

@@ -27,7 +27,7 @@ module.exports = {
             return message.reply(novoice);
         }
 
-        if (message.channel.id === '703314121801859184' || message.channel.id === '379443661290733571' || message.channel.id === '719346636714803271') {
+        if (message.channel.id === '733518588186722324' || message.channel.id === '379443661290733571' || message.channel.id === '719346636714803271') {
 
             const voiceChannel = message.member.voice.channel;
             const permisos = voiceChannel.permissionsFor(message.client.user);

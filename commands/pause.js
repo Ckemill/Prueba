@@ -31,7 +31,12 @@ module.exports = {
                 else{
 
                     serverQueue.dispatcher.pause();
-                    message.reply('musica pausada.');
+                    message.reply('musica pausada.')
+                    .then(msg => {
+                        msg.delete({ timeout: 10000 })
+                    })
+                    .catch(console.error);
+                    return;
 
                 }
             }

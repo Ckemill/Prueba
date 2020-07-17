@@ -32,7 +32,12 @@ module.exports = {
                 else{
 
                     serverQueue.dispatcher.resume();
-                    message.reply('musica reanudada.');
+                    message.reply('musica reanudada.')
+                    .then(msg => {
+                        msg.delete({ timeout: 10000 })
+                    })
+                    .catch(console.error);
+                    return;
 
                 }
             }

@@ -12,7 +12,43 @@ client.on("ready", () => {
     console.log("Coleando!");
     
     client.user.setActivity('ser un gato', { type: 'PLAYING' });
+
+    const canales = client.channels.cache;
     
+    /*canales.forEach(channels => {
+        if(channels.type == "text"){
+            channels.send('creo que me quedaré');
+        }
+    });*/
+    
+});
+
+client.on("up", () => {
+
+    console.log('Ya desperté!');
+
+    const canales = client.channels.cache;
+    
+    canales.forEach(channels => {
+        if(channels.type == "text"){
+            channels.send('He vuelto! :dog:');
+        }
+    });
+
+});
+
+client.on("down", () => {
+
+    console.log('apagando bot');
+
+    const canales = client.channels.cache;
+    
+    canales.forEach(channels => {
+        if(channels.type == "text"){
+            channels.send('Creo que me quedaré dormido.');
+        }
+    });
+
 });
 
 client.on("warn", info => console.log(info));
@@ -77,7 +113,7 @@ client.on('message', message => {
 client.on('messageReactionAdd', (reaction, user) => {
     if(!user.bot){
         const emoji = reaction._emoji;
-        const voiceChannel = reaction.message.member.voice.channel;
+        var voiceChannel = reaction.message.member.voice.channel;
 
         const { no_voice } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
 
@@ -89,7 +125,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
                 try {
 
-                    if(serverQueue.reaction === reaction.message.id){
+                    if(serverQueue.reaction.id === reaction.message.id){
 
                         if (!voiceChannel){
                             var novoice = no_voice[Math.floor(Math.random() * no_voice.length)];
@@ -156,7 +192,7 @@ client.on('messageReactionRemove', (reaction, user) => {
 
                 try {
 
-                    if(serverQueue.reaction === reaction.message.id){
+                    if(serverQueue.reaction.id === reaction.message.id){
 
                         if (!voiceChannel){
                             var novoice = no_voice[Math.floor(Math.random() * no_voice.length)];

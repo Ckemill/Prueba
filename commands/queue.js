@@ -11,20 +11,34 @@ module.exports = {
 
             const canciones = serverQueue.songs;
 
-            const titulos = [];
+            let paginaActual = 0;
+            const embeds = generateQueueEmbed(canciones);
+            const queueEmbed = await message.channel.send(`Página: ${paginaActual+1} de ${embeds.length}`, embeds[paginaActual]);
+            await queueEmbed.react('⬅️');
+            await queueEmbed.react('➡️');
+            await queueEmbed.react('⏏️');
 
-            for (var i = 0; i < canciones.length; i++) {
-                titulos.push(i+") **["+canciones[i].title+"]("+canciones[i].url+")**");
-            }
+            const filter = (reaction, user) => ['⬅️', '➡️', '⏏️'].includes(reaction.emoji.name) && (message.author.id == user.id);
+            const collector = queueEmbed.createReactionCollector(filter);
 
-            const lista = titulos.join("\n");
-
-            const colaEmbed = new Discord.MessageEmbed()
-            .setColor("#8b3dbd")
-            .setTitle('**Cola:**')
-            .setDescription(`${lista}`);
-
-            message.channel.send(colaEmbed);
+            collector.on('collect', async (reaction, user) => {
+                if (reaction.emoji.name === '➡️'){
+                    if (paginaActual < embeds.length-1) {
+                        paginaActual++;
+                        queueEmbed.edit(`Página: ${paginaActual+1} de ${embeds.length}`, embeds[paginaActual]);
+                    }
+                }
+                else if (reaction.emoji.name === '⬅️'){
+                    if (paginaActual !== 0) {
+                        --paginaActual;
+                        queueEmbed.edit(`Página: ${paginaActual+1} de ${embeds.length}`, embeds[paginaActual]);
+                    }
+                }
+                else{
+                   collector.stop();
+                   await queueEmbed.delete(); 
+                }
+            });
 
         }
         catch(err){
@@ -32,4 +46,19 @@ module.exports = {
         }
 
 	}
-};
+}
+
+function generateQueueEmbed(queue) {
+    const embeds = [];
+    let k = 15;
+    for (let i = 0; i < queue.length; i += 15){
+        const current = queue.slice(i, k);
+        let j = i;
+        k += 15;
+        const info = current.map(track => `${++j}) [${track.title}](${track.url})`).join('\n');
+        const embed = new Discord.MessageEmbed()
+            .setDescription(`**${info}**`);
+        embeds.push(embed);
+    }
+    return embeds;
+}
