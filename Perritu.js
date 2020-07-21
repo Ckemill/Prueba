@@ -129,34 +129,61 @@ client.on('messageReactionAdd', (reaction, user) => {
 
                         if (!voiceChannel){
                             var novoice = no_voice[Math.floor(Math.random() * no_voice.length)];
-                            return reaction.message.reply(novoice);
+                            return reaction.message.channel.send(novoice);
                         }
                         
                         else if (voiceChannel != serverQueue.voiceChannel){
-                            reaction.message.reply(`No estas en el mismo voice que yo.`);
+                            reaction.message.channel.send(`${user} no estas en el mismo voice que yo.`)
+                            .then(msg => {
+                                msg.delete({ timeout: 10000 })
+                            })
+                            .catch(console.error);
                         }
 
                         else if (!serverQueue.dispatcher){
-                            reaction.message.reply(`no hay nada sonando.`);
+                            reaction.message.channel.send(`${user} no hay nada sonando.`)
+                            .then(msg => {
+                                msg.delete({ timeout: 10000 })
+                            })
+                            .catch(console.error);
                         }
 
                         else{
 
                             if(emoji.name == '⏯'){
                                 serverQueue.dispatcher.pause();
+                                reaction.message.channel.send(`${user} pausó la musica.`)
+                                .then(msg => {
+                                    msg.delete({ timeout: 10000 })
+                                })
+                                .catch(console.error);
                             }
                             else if(emoji.name == '⏹'){
                                 voiceChannel.leave();
                                 reaction.message.delete();
                                 queue.delete(reaction.message.guild.id);
+                                reaction.message.channel.send(`${user} paró la música.`)
+                                .then(msg => {
+                                    msg.delete({ timeout: 10000 })
+                                })
+                                .catch(console.error);
                             }
                             else if(emoji.name == '⏭'){
                                 if (!serverQueue.songs){
-                                    message.reply(`no hay nada que skipear.`);
+                                    reaction.message.channel.send(`${user} no hay nada que skipear.`)
+                                    .then(msg => {
+                                        msg.delete({ timeout: 10000 })
+                                    })
+                                    .catch(console.error);
                                 }
                                 else{
                                     try{
                                         serverQueue.dispatcher.end();
+                                        reaction.message.channel.send(`${user} cambió de canción.`)
+                                        .then(msg => {
+                                            msg.delete({ timeout: 10000 })
+                                        })
+                                        .catch(console.error);
                                     }
                                     catch (err){
                                         console.log("error" +err);
@@ -167,8 +194,13 @@ client.on('messageReactionAdd', (reaction, user) => {
                         }
                     }
 
-                } catch {
-                    reaction.message.reply('ni siquiera estoy en un voice');
+                } catch (err) {
+                    console.log(err)
+                    reaction.message.channel.send(`${user} ni siquiera estoy en un voice`)
+                    .then(msg => {
+                        msg.delete({ timeout: 10000 })
+                    })
+                    .catch(console.error);
                 }
             }
         } catch (err) {
@@ -196,28 +228,45 @@ client.on('messageReactionRemove', (reaction, user) => {
 
                         if (!voiceChannel){
                             var novoice = no_voice[Math.floor(Math.random() * no_voice.length)];
-                            return reaction.message.reply(novoice);
+                            return reaction.message.channel.send(novoice);
                         }
                             
                         else if (voiceChannel != serverQueue.voiceChannel){
-                            reaction.message.reply(`No estas en el mismo voice que yo.`);
+                            reaction.message.channel.send(`${user} no estas en el mismo voice que yo.`)
+                            .then(msg => {
+                                msg.delete({ timeout: 10000 })
+                            })
+                            .catch(console.error);
                         }
 
                         else if (!serverQueue.dispatcher){
-                            reaction.message.reply(`no hay nada sonando.`);
+                            reaction.message.channel.send(`${user} no hay nada sonando.`)
+                            .then(msg => {
+                                msg.delete({ timeout: 10000 })
+                            })
+                            .catch(console.error);
                         }
 
                         else{
 
                             if(emoji.name == '⏯'){
                                 serverQueue.dispatcher.resume();
+                                reaction.message.channel.send(`${user} reanudó la musica.`)
+                                .then(msg => {
+                                    msg.delete({ timeout: 10000 })
+                                })
+                                .catch(console.error);
                             }
 
                         }
                     }
 
                 } catch {
-                    reaction.message.reply('ni siquiera estoy en un voice');
+                    reaction.message.reply(`${user} ni siquiera estoy en un voice`)
+                    .then(msg => {
+                        msg.delete({ timeout: 10000 })
+                    })
+                    .catch(console.error);
                 }
             }
         } catch (err) {

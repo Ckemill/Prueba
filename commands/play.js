@@ -1,12 +1,14 @@
 const fs = require('fs');
 const ytpl = require('ytpl');
 const ytsr = require('ytsr');
-const yts = require('yt-search');
+const yts = require('youtube-search');
 const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
 const fb = require("fb-video-downloader");
 const { prefix } = require("../config.json");
 const { promises } = require('dns');
+const { type } = require('os');
+const api = process.env.YT_API;
 
 module.exports = {
 	name: 'play',
@@ -326,43 +328,28 @@ module.exports = {
                     //Buscar cancion
 
                     const options = {
-                        limit: 1
+                        maxResults: 1,
+                        key: api,
+                        type: 'video'
                     }
 
                     try{
-                        ytsr( targetsong, options, async function ( err, result ) {
+                        await yts(targetsong, options, async function(err, result) {
 
-                            if ( err ) return message.reply("no encontre ninguna canción, intentalo otra vez.");
-
-                            else if(result.items.length <= 0) return message.reply(`no encontre ninguna canción, intentalo otra vez.`);
-
-                            else if(result.items[0].type == "channel"){
-                                message.reply("no encontre ninguna canción, intentalo otra vez.")
-                                .then(msg => {
-                                    msg.delete({ timeout: 10000 })
-                                })
-                                .catch(console.error);
-                                return;
-                            }
-                            else if(result.items[0].type == "playlist"){
-                                message.reply("encontré una playlist, pero no una canción. \n(*estoy trabajando en eso :eyes:*).")
-                                .then(msg => {
-                                    msg.delete({ timeout: 10000 })
-                                })
-                                .catch(console.error);
-                                return;
+                            if(err){
+                                message.reply("no encontre ninguna canción, intentalo otra vez.");
+                                return console.log(err);
                             }
 
                             else{
 
-                                const videos = result.items[0];
+                                const videos = result[0];
 
                                 const video = {
                                     title: videos.title,
                                     url: videos.link,
-                                    autor: videos.author.name,
-                                    duration: videos.duration,
-                                    img: videos.thumbnail,
+                                    autor: videos.channelTitle,
+                                    img: videos.thumbnails.high.url,
                                     usuario: user
                                 };
 
@@ -418,6 +405,7 @@ module.exports = {
                         });
                     }
                     catch(err){
+                        console.log(err);
                         message.reply('Llamen a Kemill porque no conozco este error... :s')
                         .then(msg => {
                             msg.delete({ timeout: 10000 })
@@ -501,7 +489,7 @@ function reprod(guild, construct, repro, queue, serverQueue) {
                 .setColor("#8b3dbd")
                 .setTitle(msg)
                 .setThumbnail(song.img)
-                .setDescription(`**[${song.title}](${song.url})** \n**Autor:** ${song.autor} \n**Duración:** ${song.duration} \n**Puesta por:** ${song.usuario}`);
+                .setDescription(`**[${song.title}](${song.url})** \n**Autor:** ${song.autor} \n**Puesta por:** ${song.usuario}`);
             }
             serverQueue.textChannel.send(playEmbed).then(sentMessage => {
                 construct.reaction = sentMessage;

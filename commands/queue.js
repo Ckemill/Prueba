@@ -37,6 +37,11 @@ module.exports = {
                 else{
                    collector.stop();
                    await queueEmbed.delete(); 
+                   message.channel.send(`${user} quitó la lista de canciones.`)
+                   .then(msg => {
+                        msg.delete({ timeout: 10000 })
+                    })
+                    .catch(console.error);
                 }
             });
 

@@ -26,6 +26,7 @@
     "mysql2": "^2.1.0",
     "path": "0.12.7",
     "sequelize": "^6.3.0",
+    "youtube-search": "^1.1.4",
     "yt-search": "1.1.2",
     "ytdl-core": "2.1.7",
     "ytpl": "^0.1.21",
