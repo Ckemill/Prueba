@@ -34,8 +34,6 @@ module.exports = {
             return
         }
 
-        if (message.channel.id === '733518588186722324' || message.channel.id === '703314121801859184' || message.channel.id === '719346636714803271') {
-
             const voiceChannel = message.member.voice.channel;
             const permisos = voiceChannel.permissionsFor(message.client.user);
 
@@ -417,19 +415,6 @@ module.exports = {
                 }
 
             }
-        }
-        else{
-
-            //elegir frase de canal musica al azar
-            var canal = canal_musica[Math.floor(Math.random() * canal_musica.length)];
-
-            message.channel.send(canal)
-            .then(msg => {
-                msg.delete({ timeout: 10000 })
-            })
-            .catch(console.error);
-            return;
-        }
 	}
 };
 
