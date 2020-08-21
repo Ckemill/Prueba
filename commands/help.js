@@ -26,7 +26,7 @@ module.exports = {
             {name: '**'+prefix+'frase**', value: "Agrega frases para mis comandos. \n*(Usa **"+prefix+"frase** para ver como usarlo.)*", inline: false}
         )
         .setTimestamp(fecha)
-        .addField("\u200b",'**¡Visita mi página! https://perritu.net **')
+        .addField("\u200b",'**[¡Visita mi página!](http://www.perritu.net/)**')
         .setFooter('Bot made by Ckemill', 'https://en.gravatar.com/userimage/184776942/b820bcb781c920db44ccc7bda2362843?size=200');
 
         message.channel.send(helpEmbed);
