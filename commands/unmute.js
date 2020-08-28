@@ -15,7 +15,10 @@ module.exports = {
         member.voice.setMute(false);
         users.push(member);
       }
-      message.channel.send(`Desmuteando a ${users.join(', ')}.`);
+      message.channel.send(`Desmuteando a ${users.join(', ')}.`)
+      .then(msg => {
+        msg.delete({ timeout: 10000 })
+      });
     } else {
       message.reply('No estas en ningun canal de voz.');
     }
