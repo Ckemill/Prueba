@@ -10,7 +10,7 @@ module.exports = {
 
     if (!message.guild.me.hasPermission("MUTE_MEMBERS")) return message.reply("No tengo permisos para desmutear a otros.");
 
-    if (!args.length) message.member.voice.setMute(false);
+    if (!args.length) {message.member.voice.setMute(false); return message.reply(`ya te desmutee.`).then(msg => {msg.delete({ timeout: 10000 })})}
     
     if (message.member.voice.channel) {
 
