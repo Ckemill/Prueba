@@ -44,7 +44,7 @@ module.exports = {
 
         user.voice.setMute(false);
         
-        await message.channel.send(`${user}, te acaba de desmutear ${message.author}.`);
+        await message.channel.send(`${user}, te acaba de desmutear ${message.author}.`).then(msg => {msg.delete({ timeout: 10000 })});
 
       });
 
