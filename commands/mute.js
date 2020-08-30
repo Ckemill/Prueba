@@ -14,7 +14,7 @@ module.exports = {
     
     if (message.member.voice.channel) {
 
-      if(args.length == '1' && args.toLowerCase()=='all'){
+      if(args.length == '1' && args.join().toLowerCase()=='all'){
             
         let channel = message.guild.channels.cache.get(message.member.voice.channel.id);
         
