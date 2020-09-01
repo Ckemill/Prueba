@@ -49,8 +49,6 @@ module.exports = {
                 else{
                     voiceChannel.leave();
 
-                    serverQueue.reaction.delete();
-
                     message.channel.send(para)
                     .then(msg => {
                         msg.delete({ timeout: 10000 })
@@ -58,6 +56,10 @@ module.exports = {
                     .catch(console.error);
 
                     queue.delete(message.guild.id);
+
+                    if (serverQueue.reaction){
+                        serverQueue.reaction.delete();
+                    }
                 }
             }
             catch (err){
