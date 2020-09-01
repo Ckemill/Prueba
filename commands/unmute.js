@@ -6,11 +6,11 @@ module.exports = {
     description: 'mute all on voice',
 	async execute(client, message, args) {
 
+    if (!args.length) {message.member.voice.setMute(false); return message.reply(`ya te desmutee.`).then(msg => {msg.delete({ timeout: 10000 })})}
+
     if (!message.member.permissions.has('MUTE_MEMBERS')) return message.reply(`No tienes permisos para desmutear a otros.`);
 
     if (!message.guild.me.hasPermission("MUTE_MEMBERS")) return message.reply("No tengo permisos para desmutear a otros.");
-
-    if (!args.length) {message.member.voice.setMute(false); return message.reply(`ya te desmutee.`).then(msg => {msg.delete({ timeout: 10000 })})}
     
     if (message.member.voice.channel) {
 
