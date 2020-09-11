@@ -16,11 +16,13 @@ module.exports = {
         .setColor("#8b3dbd")
         .setTitle(ayu)
         .addFields(
-            {name: '**'+prefix+'play**', value: 'Busco una canción en youtube y la reproduzco. \n*(también acepto links de Facebook y Youtube.)*', inline: true},
-            {name: '**'+prefix+'pause**', value: "Pauso la musica.", inline: false},
-            {name: '**'+prefix+'resume**', value: "Reanudo la musica.", inline: false},
+            {name: '**'+prefix+'play**', value: 'Busco una canción en youtube y la reproduzco. \n*(también acepto links de Facebook y Youtube.)*', inline: false},
+            {name: '**'+prefix+'pause**', value: "Pauso la musica.", inline: true},
+            {name: '**'+prefix+'resume**', value: "Reanudo la musica.", inline: true},
             {name: '**'+prefix+'stop**', value: "Detengo la musica y salgo de la llamada.", inline: false},
             {name: '**'+prefix+'queue**', value: "Muestro la lista de musicas en cola.", inline: false},
+            {name: '**'+prefix+'mute**', value: "Muteo a quienes menciones.", inline: true},
+            {name: '**'+prefix+'unmute**', value: "Desmuteo a quienes menciones.", inline: true},
             {name: '**'+prefix+'skip**', value: "Paso a la siguiente cancion de la cola. \n*(Si no hay una siguiente canción hago lo mismo que **"+prefix+"stop**.)*", inline: false},
             {name: '**'+prefix+'echo**', value: "Hablaré por ti lo que escribas.", inline: false},
             {name: '**'+prefix+'frase**', value: "Agrega frases para mis comandos. \n*(Usa **"+prefix+"frase** para ver como usarlo.)*", inline: false}

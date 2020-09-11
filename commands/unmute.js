@@ -6,7 +6,11 @@ module.exports = {
     description: 'mute all on voice',
 	async execute(client, message, args) {
 
-    if (!args.length) {message.member.voice.setMute(false); return message.reply(`ya te desmutee.`).then(msg => {msg.delete({ timeout: 10000 })})}
+    if (!args.length) {
+      if (!message.member.voice.serverMute) return message.reply(`ya estás desmuteado.`);
+      message.member.voice.setMute(false);
+      return message.reply(`ya te desmutee.`).then(msg => {msg.delete({ timeout: 10000 })})
+    }
 
     if (!message.member.permissions.has('MUTE_MEMBERS')) return message.reply(`No tienes permisos para desmutear a otros.`);
 
@@ -21,13 +25,19 @@ module.exports = {
         const users = [];
 
         for (const [memberID, member] of channel.members) {
-          member.voice.setMute(false);
-          users.push(member);
+          if(member.voice.serverMute){
+            member.voice.setMute(false);
+            users.push(member);
+          }
         }
         message.channel.send(`Desmuteando a ${users.join(', ')}.`)
         .then(msg => {
           msg.delete({ timeout: 10000 })
         });
+      }
+
+      if (args.length >= 1 && !message.mentions.members.first() && args.join().toLowerCase()!='all') {
+        return message.channel.send(`Para desmutearte a ti mismo solo pon **${prefix}unmute**.\nPuedes desmutear mencionando a quienes o a todos con **${prefix}unmute all**. \nEjemplo: \`${prefix}unmute @${message.author.username}\`.`);
       }
 
       //muteando con menciones:
@@ -36,7 +46,11 @@ module.exports = {
 
         if (!user) return message.reply("menciona a quien o quienes quieres mutear.");
 
-        //if (user.roles.cache.has(muterole)) return message.reply(`${user} ya está muteado.`); detectar si esta muteado.
+        if (user.id === message.author.id) return message.reply(`para demutearte a ti mismo no tienes que mencionarte.`);
+
+        if (!user.voice.serverMute && user.voice.selfMute) return message.reply(`${user} se muteo el mismo, no puedo desmutearlo.`);
+
+        if (!user.voice.serverMute) return message.reply(`${user} ya estába desmuteado.`);
 
         if (!user.voice.channel) return message.reply(`${user} no está en ningún voice.`);
 

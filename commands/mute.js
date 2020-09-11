@@ -21,8 +21,10 @@ module.exports = {
         const users = [];
 
         for (const [memberID, member] of channel.members) {
-          member.voice.setMute(true);
-          users.push(member);
+          if (!member.voice.serverMute){
+            member.voice.setMute(true);
+            users.push(member);
+          }
         }
         message.channel.send(`Muteando a ${users.join(', ')}.`)
         .then(msg => {
@@ -40,7 +42,7 @@ module.exports = {
 
         if (user.id === message.author.id) return message.reply("pero para eso muteate tu mismo...");
 
-        //if (user.roles.cache.has(muterole)) return message.reply(`${user} ya está muteado.`); detectar si esta muteado.
+        if (user.voice.serverMute) return message.reply(`${user} ya estába muteado.`);
 
         if (!user.voice.channel) return message.reply(`${user} no está en ningún voice.`);
 
