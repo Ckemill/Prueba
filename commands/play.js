@@ -487,7 +487,7 @@ function reprod(guild, construct, repro, queue, serverQueue) {
                 connection.then(connection => {
                     connection.voice.setSelfDeaf(true);
 
-                    const dispatcher = connection.play(stream);
+                    const dispatcher = connection.play(stream, { volume: 0.25 });
 
                     construct.dispatcher = dispatcher;
                     
