@@ -1,8 +1,8 @@
 const fs = require('fs');
 
 module.exports = {
-	name: 'stop',
-    description: 'Parar la musica',
+	name: 'volume',
+    description: 'volumen de la musica',
 	async execute(client, message, args, queue) {
 
         const { parar_musica } = JSON.parse(fs.readFileSync('./frases.json', 'utf8'));
